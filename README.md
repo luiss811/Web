@@ -1,8 +1,6 @@
 # MINERALIA - Portal de Gemas & E-commerce
 
-Este repositorio contiene el código fuente de **MINERALIA**, una aplicación web interactiva que fusiona un catálogo científico informativo sobre minerales y una plataforma de comercio electrónico de especímenes geológicos. La aplicación está construida con tecnologías modernas y sigue estrictamente las mejores prácticas de modularidad, tipado estático y diseño responsivo.
-
-A continuación, se presentan las dos actividades requeridas para la documentación del portal.
+**MINERALIA**, una aplicación web interactiva que fusiona un catálogo científico informativo sobre minerales y una plataforma de comercio electrónico de especímenes geológicos. La aplicación está construida con tecnologías modernas y sigue estrictamente las mejores prácticas de modularidad, tipado estático y diseño responsivo.
 
 ---
 
@@ -73,8 +71,6 @@ El diseño del portal se basa en las tres partes fundamentales de una página we
 
 ## Actividad 2: Documentación del Prototipo Mockup y Elementos del Sitio
 
-Esta sección proporciona el inventario completo y la distribución espacial de los elementos de interfaz, así como una guía paso a paso para la captura de pantalla de los prototipos del sitio web interactivo.
-
 ### 1. Enumeración y Señalización de Elementos del Sitio Web
 
 En el prototipo interactivo desarrollado en JavaScript/React, se identifican y señalan los siguientes elementos del sitio:
@@ -119,7 +115,7 @@ En el prototipo interactivo desarrollado en JavaScript/React, se identifican y s
 
 ### 2. Mockups de Distribución Espacial de Elementos (Wireframes de Prototipo)
 
-Los diagramas a continuación ilustran la disposición espacial de los elementos del prototipo en pantallas de escritorio, sirviendo como guía de referencia para comprender el diseño antes de documentar físicamente las capturas de pantalla del servidor web local.
+Los diagramas a continuación ilustran la disposición espacial de los elementos del prototipo en pantallas de escritorio, sirviendo como guía de referencia para comprender el diseño.
 
 #### A. Distribución en la Vista: E-Shop (`Shop.tsx`)
 
@@ -211,40 +207,3 @@ Los diagramas a continuación ilustran la disposición espacial de los elementos
 
 ---
 
-### 3. Guía Práctica para la Toma de Capturas de Pantalla del Prototipo
-
-Para documentar visualmente el comportamiento de los elementos señalados arriba en un informe interactivo o carpeta de entregables, siga estos pasos para ejecutar el entorno local y realizar las capturas:
-
-#### Paso 1: Levantar el Servidor de Desarrollo
-Abra su terminal preferida (PowerShell, CMD o Bash) en el directorio raíz del proyecto (`c:\Users\ellal\Desktop\Web`) y ejecute:
-```powershell
-npm run dev
-```
-El servidor de desarrollo de Vite se iniciará e indicará la dirección de acceso local (por defecto, `http://localhost:5173/`).
-
-#### Paso 2: Navegar a la Interfaz del Prototipo
-Abra su navegador web favorito (Chrome, Firefox o Edge) e ingrese a la dirección `http://localhost:5173/`.
-
-#### Paso 3: Capturas de Pantalla Recomendadas para el Entregable
-Para mostrar el funcionamiento interactivo completo, se recomienda realizar las siguientes tomas de pantalla:
-
-1.  **Captura del Prototipo A: E-Shop Principal (Modo Claro)**
-    *   **Área**: Sección de Tienda superior con el Banner Hero interactivo.
-    *   **Elementos visibles**: Botón de llamada a la acción [9], logotipo corporativo [1], barra de búsqueda global [3], el selector de Modo Claro/Oscuro [6] en su estado diurno.
-2.  **Captura del Prototipo B: Cuadrícula de Minerales con Carrito Abierto (Modo Oscuro)**
-    *   **Área**: Grilla de venta de minerales con el Drawer del Carrito de Compras abierto a la derecha.
-    *   **Elementos visibles**: Especímenes con forma tridimensional generados por CSS [13], insignias de stock [15], el Drawer del carro [16] con desgloses de precios, botones de control de cantidad, y el botón finalizador de pago [18].
-3.  **Captura del Prototipo C: Modal de Confirmación de Pedido**
-    *   **Área**: Pantalla de Tienda después de presionar "Finalizar Pedido".
-    *   **Elementos visibles**: El cuadro de diálogo emergente centrado [19] con el número de transacción `MIN-XXXXXX` en formato de color verde, indicando que el flujo de compra simulado se completó exitosamente.
-4.  **Captura del Prototipo D: Catálogo de Minerales con Ficha Técnica Abierta**
-    *   **Área**: Sección de Catálogo Científico después de cambiar la página y abrir los detalles de un mineral.
-    *   **Elementos visibles**: Barra de filtros por cristal [20], indicador de latencia del servidor y total de items [21], modal de detalles químicos [23], elementos químicos mapeados y el enlace hipertexto al portal de Mindat.org [24].
-5.  **Captura del Prototipo E: Panel de Analíticas y Consola de Telemetría**
-    *   **Área**: Sección de Estadísticas en el menú superior.
-    *   **Elementos visibles**: Gráficos de barras horizontales [27] mostrando las páginas más visitadas por el usuario, fuentes de tráfico orgánico y la consola de logs de eventos [28] que imprime los tiempos de respuesta y peticiones consumidas de GeoAPIs.io.
-6.  **Captura del Prototipo F: Formulario de Contacto y Mapa Topográfico**
-    *   **Área**: Vista de Contacto.
-    *   **Elementos visibles**: Campos de entrada validados en tiempo real [29], mapa topográfico con líneas de nivel simuladas [30], iconos de redes sociales y los datos de contacto específicos (WhatsApp: 4428364570, Llamadas: 4464225541, Email: lalitorios81@gmail.com).
-
-*Nota: Para capturar de manera limpia las pantallas en navegadores modernos, puede utilizar la herramienta de recorte de su sistema operativo (`Win + Shift + S` en Windows, o `Cmd + Shift + 4` en macOS) o las herramientas para desarrolladores del navegador (`F12 -> Ctrl + Shift + P -> escribir "Capture full size screenshot"`).*
