@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Gem, Mail, Phone, MessageCircle, CreditCard } from 'lucide-react';
+import { Mail, Phone, MessageCircle, CreditCard } from 'lucide-react';
 
 const FacebookIcon = () => (
   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -38,11 +38,11 @@ export const Footer: React.FC = () => {
               onClick={() => handleNav('shop')} 
               className="flex items-center space-x-2.5 cursor-pointer group w-fit"
             >
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-gold-500 flex items-center justify-center shadow-md">
-                <Gem className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-lg items-center justify-center">
+                <img src="/src/assets/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
               </div>
               <span className="text-xl font-black tracking-widest font-display bg-clip-text text-transparent">
-                MINERALIA
+                Canek
               </span>
             </div>
             <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
                   onClick={() => handleNav('shop')} 
                   className="text-sm text-mineral-500 dark:text-mineral-400 hover:text-emerald-500 dark:hover:text-gold-400 transition-colors"
                 >
-                  E-Shop / Tienda
+                  Shop / Tienda
                 </button>
               </li>
               <li>

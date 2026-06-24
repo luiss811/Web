@@ -68,7 +68,7 @@ export const Catalog: React.FC = () => {
       {/* Intro Header */}
       <div className="space-y-4 mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
-          Catálogo <span className="bg-clip-text text-transparent">Científico</span> de Minerales
+          Catálogo de Minerales
         </h1>
         <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
           Consulta y estudia las propiedades cristaloquímicas oficiales de las especies aprobadas por la CNMNC (Asociación Mineralógica Internacional). Datos sincrónicos obtenidos en tiempo real de GeoAPIs.io.
@@ -115,9 +115,6 @@ export const Catalog: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-mineral-500 mb-6 bg-mineral-100/50 dark:bg-mineral-900/20 px-4 py-3 rounded-xl border border-mineral-200/20 dark:border-mineral-800/20">
         <div>
           Mostrando página <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiPage}</span> de <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalPages}</span> | Total de especies catalogadas: <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalItems}</span>
-        </div>
-        <div className="text-2xs uppercase tracking-wider text-emerald-500 font-bold mt-2 sm:mt-0 flex items-center">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2 animate-ping"></span> API Conectada
         </div>
       </div>
 
@@ -275,7 +272,7 @@ export const Catalog: React.FC = () => {
         </>
       )}
 
-      {/* 3. TECHNICAL SPECIFICATIONS MODAL (Prezi layout element) */}
+      {/* 3. TECHNICAL SPECIFICATIONS MODAL */}
       {selectedMineral && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mineral-950/80 backdrop-blur-md">
           <div className="glass border-2 border-emerald-500/20 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 rounded-2xl space-y-6 shadow-2xl relative text-mineral-805 dark:text-mineral-100 sci-box">
@@ -285,19 +282,19 @@ export const Catalog: React.FC = () => {
               onClick={() => setSelectedMineral(null)}
               className="absolute top-4 right-4 p-1.5 rounded-lg text-mineral-450 hover:bg-mineral-100 dark:hover:bg-mineral-800 transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-7 h-7" />
             </button>
 
             {/* Modal Title */}
             <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 border-b border-mineral-200/50 dark:border-mineral-800/50 pb-5">
               <div className="w-20 h-20 rounded-xl bg-mineral-950 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 relative overflow-hidden sci-box sci-crosshairs shadow-inner">
                 <MineralVisual mineral={selectedMineral} size="sm" />
-                <div className="absolute top-1 left-1 text-[7px] font-mono text-emerald-500/50 uppercase select-none">CAM_01</div>
-                <div className="absolute bottom-1 right-1 text-[7px] font-mono text-emerald-500/50 uppercase select-none">SPEC_V</div>
+                <div className="absolute top-1 left-1 text-[7px] font-mono text-emerald-500/50 uppercase select-none"></div>
+                <div className="absolute bottom-1 right-1 text-[7px] font-mono text-emerald-500/50 uppercase select-none"></div>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest font-mono block">
-                  // Análisis Cristalográfico Oficial
+                <span className="text-[9px] font-display font-bold text-emerald-500 uppercase tracking-widest block">
+                  Análisis Cristalográfico Oficial
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
                   {selectedMineral.name}
@@ -311,17 +308,17 @@ export const Catalog: React.FC = () => {
               {/* Left Column: Chemistry & Crystals */}
               <div className="space-y-4">
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Fórmula Química:</span>
+                  <span className="text-2xs font-display font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Fórmula Química:</span>
                   <span className="text-sm font-mono font-bold bg-mineral-100 dark:bg-mineral-900/60 px-3 py-1.5 rounded-lg block border border-mineral-200/30 dark:border-mineral-800/30">
                     {selectedMineral.chemicalFormula || 'No especificada'}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Elementos Presentes:</span>
+                  <span className="text-2xs font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Elementos Presentes:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {(selectedMineral.chemistryElements || '').split(' ').filter(Boolean).map((el, i) => (
-                      <span key={i} className="px-2 py-1 text-2xs font-black rounded-md bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      <span key={i} className="px-2 py-1 text-2xs font-display font-black rounded-md bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                         {el}
                       </span>
                     ))}
@@ -329,7 +326,7 @@ export const Catalog: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Sistema de Cristalización:</span>
+                  <span className="text-2xs font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Sistema de Cristalización:</span>
                   <span className="text-sm font-semibold capitalize flex items-center space-x-1.5 text-mineral-700 dark:text-mineral-200">
                     <Layers className="w-4 h-4 text-gold-500" />
                     <span>{selectedMineral.crystalSystems || 'Desconocido / Amorfo'}</span>
@@ -337,12 +334,12 @@ export const Catalog: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Estatus IMA (CNMNC):</span>
+                  <span className="text-2xs font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Estatus IMA (CNMNC):</span>
                   <span className="inline-block px-3 py-1 text-2xs font-bold rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                     {selectedMineral.imaStatus || 'Sin registro'}
                   </span>
                   {selectedMineral.imaNumber && (
-                    <span className="text-xs font-mono text-mineral-400 dark:text-mineral-500 ml-2">
+                    <span className="text-xs font-mono text-mineral-600 dark:text-mineral-400 ml-2">
                       Código: {selectedMineral.imaNumber}
                     </span>
                   )}
@@ -352,13 +349,13 @@ export const Catalog: React.FC = () => {
               {/* Right Column: Classifications & Varieties */}
               <div className="space-y-4">
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Códigos de Clasificación:</span>
+                  <span className="text-2xs font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Códigos de Clasificación:</span>
                   <div className="space-y-2">
                     {selectedMineral.hasClassificationCodes && selectedMineral.hasClassificationCodes.length > 0 ? (
                       selectedMineral.hasClassificationCodes.map((code, index) => (
                         <div key={index} className="text-xs p-2 rounded-lg bg-mineral-50/50 dark:bg-mineral-950/20 border border-mineral-200/30 dark:border-mineral-800/30">
                           <div className="font-bold text-mineral-650 dark:text-mineral-300">{code.classificationSystem}</div>
-                          <div className="text-mineral-400 font-mono mt-0.5">{code.classificationCodeLabel}: {code.classificationCode}</div>
+                          <div className="text-mineral-500 font-mono mt-0.5">{code.classificationCodeLabel}: {code.classificationCode}</div>
                         </div>
                       ))
                     ) : (
@@ -369,7 +366,7 @@ export const Catalog: React.FC = () => {
 
                 {/* Varieties */}
                 <div>
-                  <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wider block mb-1">Variedades del Mineral:</span>
+                  <span className="text-2xs font-display font-bold text-mineral-700 dark:text-mineral-300 uppercase tracking-wider block mb-1">Variedades del Mineral:</span>
                   {selectedMineral.hasVarieties && selectedMineral.hasVarieties.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5">
                       {selectedMineral.hasVarieties.map((v, i) => (

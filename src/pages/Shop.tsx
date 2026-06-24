@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Mineral } from '../context/AppContext';
-import { ShoppingCart, Star, Trash2, ShieldCheck, Sparkles, RefreshCw, X, ShoppingBag, Gem } from 'lucide-react';
+import { ShoppingCart, Star, Trash2, ShieldCheck, RefreshCw, X, ShoppingBag } from 'lucide-react';
 
 // Beautiful geometric mineral visual representation based on crystal system and color
 export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'lg' }> = ({ mineral, size = 'md' }) => {  
@@ -14,7 +14,9 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
   // Build unique gradient based on the mineral color and system
   const color = mineral.accentColor;
   
+  // eslint-disable-next-line prefer-const
   let clipPath = '';
+  // eslint-disable-next-line prefer-const
   let shadowGlow = '';
 
 
@@ -64,7 +66,6 @@ export const Shop: React.FC = () => {
 
   const rarities = ['all', 'Comun', 'Raro', 'Exotico', 'Unico'];
 
-  // Filter & Sort Minerals
   const filteredMinerals = minerals.filter(mineral => {
     if (selectedRarity === 'all') return true;
     return mineral.rarity === selectedRarity;
@@ -90,22 +91,24 @@ export const Shop: React.FC = () => {
   return (
     <div className="min-h-screen pb-20">
       
-      {/* 1. HERO BANNER & CTA (Prezi elements) */}
-      <section className="relative overflow-hidden text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border border-mineral-800 shadow-2xl sci-box-gold">
+      {/* BANNER & CTA */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-mineral-900 to-mineral-950 text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border border-mineral-800 shadow-2xl sci-box-gold">
         <div className="absolute inset-0 overflow-hidden sci-grid opacity-30"></div>
         <div className="absolute inset-0 overflow-hidden">
           {/* Animated decorative graphics */}
           <div className="absolute -top-1/2 -left-1/4 w-[700px] h-[700px] rounded-full bg-emerald-500/10 blur-[120px] animate-pulse-slow"></div>
           <div className="absolute -bottom-1/2 -right-1/4 w-[700px] h-[700px] rounded-full bg-gold-500/10 blur-[120px] animate-pulse-slow"></div>
+          <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/SXlqp9cI9TSN8EVD/img_20251027_152656343_mfnr-Y170sgt6mcC1UUWI.jpg" alt="Canek Logo" className="" />
         </div>
         
         {/* Telemetry labels */}
         <div className="relative max-w-4xl z-10 space-y-6">
-          <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none bg-clip-text">
+          <div className="relative max-w-4xl z-10 space-y-6">
+            <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none bg-gradient-to-r from-white via-mineral-400 to-mineral-800 bg-clip-text">
             Colecciona la Belleza <br />
             <span className="bg-clip-text text-transparent">Geométrica</span> de la Tierra
           </h1>
-          <p className="text-lg text-mineral-300 max-w-xl font-light">
+            <p className="text-lg text-mineral-100 max-w-xl ">
             Adquiere especímenes cristalinos auténticos y accede a la base científica más completa del mundo. Despachos rápidos y asegurados con certificados de autenticidad.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
@@ -125,6 +128,7 @@ export const Shop: React.FC = () => {
               Ver Ofertas
             </button>
           </div>
+        </div>
         </div>
       </section>
 
@@ -217,7 +221,7 @@ export const Shop: React.FC = () => {
                 <div 
                   key={mineral.identifier}
                   className={`glass-card flex flex-col justify-between p-5 group ${
-                    mineral.rarity === 'Legendario' ? 'sci-box-gold border border-gold-500/20' : 'sci-box'
+                    mineral.rarity === 'Unico' ? 'sci-box-gold border border-gold-500/20' : 'sci-box'
                   }`}
                 >
                   {/* Card Header & Rarity Badge */}
@@ -227,9 +231,9 @@ export const Shop: React.FC = () => {
                     </span>
                     <span 
                       className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                        mineral.rarity === 'Legendario' 
+                        mineral.rarity === 'Unico' 
                           ? 'bg-gold-500/10 text-gold-500 border border-gold-500/30' 
-                          : mineral.rarity === 'Exótico'
+                        : mineral.rarity === 'Exotico'
                           ? 'bg-ruby-500/10 text-ruby-500 border border-ruby-500/30'
                           : mineral.rarity === 'Raro'
                           ? 'bg-sapphire-500/10 text-sapphire-500 border border-sapphire-500/30'
@@ -249,17 +253,17 @@ export const Shop: React.FC = () => {
 
                   {/* Text details */}
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-mineral-800 dark:text-mineral-100 group-hover:text-emerald-500 transition-colors truncate">
+                    <h3 className="text-lg font-display font-bold text-mineral-800 dark:text-mineral-100 group-hover:text-emerald-500 transition-colors truncate">
                       {mineral.name}
                     </h3>
-                    <p className="text-xs text-mineral-400 dark:text-mineral-500 font-mono truncate">
+                    <p className="text-xs text-mineral-700 dark:text-mineral-800 font-display truncate">
                       Fórmula: {mineral.chemicalFormula || 'No disponible'}
                     </p>
                     
                     {/* Rating */}
                     <div className="flex items-center space-x-1 py-1">
                       <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
-                      <span className="text-xs font-bold text-mineral-700 dark:text-mineral-300">
+                      <span className="text-xs font-display text-mineral-700 dark:text-mineral-300">
                         {mineral.rating.toFixed(1)}
                       </span>
                       <span className="text-2xs text-mineral-400 dark:text-mineral-500">
@@ -270,7 +274,7 @@ export const Shop: React.FC = () => {
                     {/* Price and Stock */}
                     <div className="flex justify-between items-end pt-2 border-t border-mineral-100 dark:border-mineral-800/40">
                       <div>
-                        <span className="text-2xs font-bold text-mineral-400 uppercase tracking-wide block">Precio:</span>
+                        <span className="text-2xs font-display text-mineral-400 uppercase tracking-wide block">Precio:</span>
                         <span className="text-xl font-black text-mineral-800 dark:text-mineral-100 font-display">
                           ${mineral.price.toFixed(2)} USD
                         </span>
@@ -284,7 +288,7 @@ export const Shop: React.FC = () => {
                     <button
                       onClick={() => addToCart(mineral)}
                       disabled={mineral.stock <= 0}
-                      className="w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-bold transition-transform hover:scale-[1.02] flex items-center justify-center space-x-2 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 disabled:bg-mineral-300 disabled:text-mineral-500 disabled:cursor-not-allowed shadow-md"
+                      className="w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-display transition-transform hover:scale-[1.02] flex items-center justify-center space-x-2 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 disabled:bg-mineral-300 disabled:text-mineral-500 disabled:cursor-not-allowed shadow-md"
                     >
                       <ShoppingCart className="w-4 h-4" />
                       <span>{mineral.stock > 0 ? 'Añadir al Carrito' : 'Agotado'}</span>
@@ -444,10 +448,6 @@ export const Shop: React.FC = () => {
                 <span className="font-bold text-emerald-500">Preparando Despacho</span>
               </div>
             </div>
-
-            {/* <p className="text-xs text-mineral-450 dark:text-mineral-500 leading-relaxed">
-              Hemos enviado los detalles del despacho y el certificado digital de autenticidad mineralógica al correo del comprador. ¡Gracias por confiar en Mineralia!
-            </p> */}
 
             <button
               onClick={() => setCheckoutSuccess(false)}

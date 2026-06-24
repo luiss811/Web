@@ -6,6 +6,7 @@ export const Analytics: React.FC = () => {
   const { stats, apiPage, apiTotalPages, apiTotalItems } = useApp();
 
   const pageViewArray = Object.entries(stats.pageViews);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const totalViews = pageViewArray.reduce((acc, [_, val]) => acc + val, 0);
 
   // Simulated traffic sources

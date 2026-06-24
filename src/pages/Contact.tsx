@@ -54,10 +54,10 @@ export const Contact: React.FC = () => {
       {/* Intro */}
       <div className="space-y-4 mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
-          Formulario de <span className="bg-clip-text text-transparent">Contacto</span> y Ubicación
+          Formulario de Contacto y Ubicación
         </h1>
         <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
-          ¿Tienes dudas sobre un espécimen mineral, clasificaciones cristalográficas o envíos internacionales? Escríbenos directamente o visítanos en nuestro laboratorio de exhibición.
+          ¿Tienes dudas sobre un espécimen mineral, clasificaciones cristalográficas o envíos internacionales? Escríbenos directamente o visítanos en nuestra tienda fisica.
         </p>
       </div>
 
@@ -70,7 +70,6 @@ export const Contact: React.FC = () => {
               <MessageSquare className="w-5 h-5 text-emerald-500" />
               <h2 className="text-lg font-bold font-display text-mineral-800 dark:text-mineral-100">Envíanos un Mensaje</h2>
             </div>
-            <span className="text-[9px] font-mono text-mineral-450 dark:text-mineral-500 uppercase tracking-wider">// COM_INBOX</span>
           </div>
 
           {submitted ? (
@@ -255,11 +254,7 @@ export const Contact: React.FC = () => {
                   <span>Sede Mineralia HQ</span>
                 </div>
               </div>
-              
-              {/* Map overlays / zoom mock controls */}
-              <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded bg-mineral-950/80 text-[10px] font-mono text-mineral-400 border border-mineral-800">
-                Lat: 20.5888° N, Long: 100.3899° W
-              </div>
+
 
               <div className="absolute top-3 right-3 flex flex-col space-y-1">
                 <button className="w-7 h-7 rounded bg-mineral-950/80 text-white font-bold border border-mineral-800 text-xs flex items-center justify-center hover:bg-mineral-800">+</button>

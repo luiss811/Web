@@ -37,7 +37,6 @@ export const Header: React.FC = () => {
       navigateTo('catalog');
     }
   };
-  //{ id: 'analytics', label: 'Estadísticas', icon: BarChart2 },
   const navItems = [
     { id: 'shop', label: 'Shop', icon: ShoppingCart },
     { id: 'catalog', label: 'Catálogo', icon: Gem },
@@ -54,20 +53,20 @@ export const Header: React.FC = () => {
             onClick={() => handleNavClick('shop')} 
             className="flex items-center space-x-3 cursor-pointer group"
           >
-            <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-500 to-gold-500 shadow-md group-hover:scale-105 transition-transform duration-300">
-              <Gem className="w-6 h-6 text-white animate-pulse-slow" />
+            <div className="relative flex items-center justify-center w-12 h-12 rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300">
+              <img src="/src/assets/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-emerald-500 to-gold-500 blur-sm opacity-50 group-hover:opacity-80 transition-opacity"></div>
             </div>
             <div>
-              <span className="text-2xl font-black tracking-widest font-display bg-clip-text text-transparent">
-                MINERALIA
+              <span className="text-2xl font-black font-display bg-gradient-to-r from-gray-800 to-gray-200 bg-clip-text text-transparent">
+                Canek
               </span>
             </div>
           </div>
 
-          {/* Description Tagline (Center-Left) */}
+          {/* Description Tagline */}
           <div className="hidden lg:flex flex-col max-w-xs text-left leading-tight ml-4 border-l border-mineral-200 dark:border-mineral-800 pl-4">
-            <span className="text-[10px] text-mineral-400 dark:text-mineral-500">
+            <span className="text-[15px] text-mineral-500 dark:text-mineral-100">
               Compra y aprende de los cristales más raros de la Tierra.
             </span>
           </div>
@@ -98,7 +97,7 @@ export const Header: React.FC = () => {
                   onClick={() => handleNavClick(item.id)}
                   className={`flex items-center space-x-4 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
                     isActive 
-                    ? 'text-emerald-600 dark:text-gold-400 border border-emerald-500/20' 
+                    ? 'bg-gradient-to-r from-emerald-500/10 to-gold-500/10 text-emerald-600 dark:text-gold-400 border border-emerald-500/20' 
                       : 'text-mineral-600 dark:text-mineral-300 hover:bg-mineral-100/50 dark:hover:bg-mineral-900/50 border border-transparent'
                   }`}
                 >
@@ -184,7 +183,7 @@ export const Header: React.FC = () => {
                   onClick={() => handleNavClick(item.id)}
                   className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                     isActive 
-                    ? 'text-emerald-600 dark:text-gold-400' 
+                    ? 'bg-gradient-to-r from-emerald-500/10 to-gold-500/10 text-emerald-600 dark:text-gold-400' 
                       : 'text-mineral-600 dark:text-mineral-300 hover:bg-mineral-100/50 dark:hover:bg-mineral-900/50'
                   }`}
                 >
