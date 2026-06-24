@@ -54,7 +54,7 @@ export const Contact: React.FC = () => {
       {/* Intro */}
       <div className="space-y-4 mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
-          Formulario de <span className="bg-gradient-to-r from-emerald-500 to-gold-500 bg-clip-text text-transparent">Contacto</span> y Ubicación
+          Formulario de <span className="bg-clip-text text-transparent">Contacto</span> y Ubicación
         </h1>
         <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
           ¿Tienes dudas sobre un espécimen mineral, clasificaciones cristalográficas o envíos internacionales? Escríbenos directamente o visítanos en nuestro laboratorio de exhibición.
@@ -167,7 +167,7 @@ export const Contact: React.FC = () => {
               {/* CTA Send */}
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-emerald-500 to-gold-500 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-black rounded-xl shadow-lg transition-transform hover:scale-[1.01] flex items-center justify-center space-x-2"
+                  className="w-full py-3 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-black rounded-xl shadow-lg transition-transform hover:scale-[1.01] flex items-center justify-center space-x-2"
               >
                 <Send className="w-4 h-4" />
                 <span>Enviar Solicitud</span>

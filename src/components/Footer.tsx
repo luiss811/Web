@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
               <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-gold-500 flex items-center justify-center shadow-md">
                 <Gem className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-black tracking-widest font-display bg-gradient-to-r from-emerald-500 to-gold-500 bg-clip-text text-transparent">
+              <span className="text-xl font-black tracking-widest font-display bg-clip-text text-transparent">
                 MINERALIA
               </span>
             </div>
@@ -204,7 +204,6 @@ export const Footer: React.FC = () => {
               Términos de Uso
             </button>
             <span className="text-mineral-300 dark:text-mineral-800">|</span>
-            <span>Hecho con fines educativos e informativos</span>
           </div>
         </div>
 

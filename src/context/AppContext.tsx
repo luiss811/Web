@@ -32,7 +32,7 @@ export interface Mineral {
   price: number;
   rating: number;
   stock: number;
-  rarity: 'Común' | 'Raro' | 'Exótico' | 'Legendario';
+  rarity: 'Comun' | 'Raro' | 'Exotico' | 'Unico';
   accentColor: string;
 }
 
@@ -105,15 +105,15 @@ const augmentMineral = (raw: any): Mineral => {
   const stock = 1 + (absHash % 15);
 
   // Rarity determination
-  let rarity: Mineral['rarity'] = 'Común';
-  if (price > 350) rarity = 'Legendario';
-  else if (price > 180) rarity = 'Exótico';
+  let rarity: Mineral['rarity'] = 'Comun';
+  if (price > 350) rarity = 'Unico';
+  else if (price > 180) rarity = 'Exotico';
   else if (price > 75) rarity = 'Raro';
 
   // Aesthetic colors (HLS representation of beautiful minerals)
   const hues = [150, 220, 340, 45, 270, 15, 180]; // Emerald, Sapphire, Ruby, Gold, Amethyst, Amber, Turquoise
   const chosenHue = hues[absHash % hues.length];
-  const accentColor = `hsl(${chosenHue}, 75%, ${rarity === 'Legendario' ? '60%' : '50%'})`;
+  const accentColor = `hsl(${chosenHue}, 75%, ${rarity === 'Unico' ? '60%' : '50%'})`;
 
   return {
     ...raw,

@@ -4,9 +4,7 @@ import type { Mineral } from '../context/AppContext';
 import { ShoppingCart, Star, Trash2, ShieldCheck, Sparkles, RefreshCw, X, ShoppingBag, Gem } from 'lucide-react';
 
 // Beautiful geometric mineral visual representation based on crystal system and color
-export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'lg' }> = ({ mineral, size = 'md' }) => {
-  const system = (mineral.crystalSystems || '').toLowerCase();
-  
+export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'lg' }> = ({ mineral, size = 'md' }) => {  
   const sizeClasses = {
     sm: 'w-16 h-16',
     md: 'w-36 h-36',
@@ -18,21 +16,7 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
   
   let clipPath = '';
   let shadowGlow = '';
-  
-  if (system.includes('cubic')) {
-    clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'; // hexagon-like
-    shadowGlow = '0 0 20px rgba(245, 158, 11, 0.4)';
-  } else if (system.includes('hexagonal')) {
-    clipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
-    shadowGlow = '0 0 20px rgba(16, 185, 129, 0.4)';
-  } else if (system.includes('monoclinic') || system.includes('triclinic')) {
-    clipPath = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'; // diamond
-    shadowGlow = '0 0 20px rgba(239, 68, 68, 0.4)';
-  } else {
-    // Orthorhombic/other: crystal point
-    clipPath = 'polygon(50% 0%, 90% 20%, 90% 80%, 50% 100%, 10% 80%, 10% 20%)';
-    shadowGlow = '0 0 20px rgba(59, 130, 246, 0.4)';
-  }
+
 
   return (
     <div className={`relative flex items-center justify-center ${sizeClasses[size]}`}>
@@ -52,20 +36,7 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
       ></div>
 
       {/* Main Core Crystal body */}
-      <div 
-        className="w-full h-full shadow-inner flex items-center justify-center relative overflow-hidden"
-        style={{ 
-          clipPath,
-          background: `linear-gradient(135deg, ${color} 0%, hsl(210, 30%, 12%) 100%)`,
-        }}
-      >
-        {/* Facet highlights */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50"></div>
-        <div className="absolute top-0 left-0 w-full h-[50%] bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-y-12"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-12 bg-white/15 blur-sm rotate-45"></div>
 
-        <Gem className="w-1/3 h-1/3 text-white/40 drop-shadow-md" />
-      </div>
     </div>
   );
 };
@@ -91,7 +62,7 @@ export const Shop: React.FC = () => {
   const [checkoutSuccess, setCheckoutSuccess] = useState<boolean>(false);
   const [orderNumber, setOrderNumber] = useState<string>('');
 
-  const rarities = ['all', 'Común', 'Raro', 'Exótico', 'Legendario'];
+  const rarities = ['all', 'Comun', 'Raro', 'Exotico', 'Unico'];
 
   // Filter & Sort Minerals
   const filteredMinerals = minerals.filter(mineral => {
@@ -120,7 +91,7 @@ export const Shop: React.FC = () => {
     <div className="min-h-screen pb-20">
       
       {/* 1. HERO BANNER & CTA (Prezi elements) */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-mineral-900 to-mineral-950 text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border border-mineral-800 shadow-2xl sci-box-gold">
+      <section className="relative overflow-hidden text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border border-mineral-800 shadow-2xl sci-box-gold">
         <div className="absolute inset-0 overflow-hidden sci-grid opacity-30"></div>
         <div className="absolute inset-0 overflow-hidden">
           {/* Animated decorative graphics */}
@@ -129,20 +100,10 @@ export const Shop: React.FC = () => {
         </div>
         
         {/* Telemetry labels */}
-        <div className="absolute top-4 right-4 text-[8px] font-mono text-gold-500/60 uppercase select-none tracking-widest hidden md:block">
-          SYS_STATUS: ACTIVE // STABLE_SYS // GRID_REF: MX_QRO
-        </div>
-        <div className="absolute bottom-4 left-6 text-[8px] font-mono text-emerald-500/50 select-none tracking-widest hidden md:block">
-          GEOLOGICAL DATA ACQUISITION LAYER // LAT: 20.5888 N
-        </div>
-        
         <div className="relative max-w-4xl z-10 space-y-6">
-          <span className="inline-flex items-center px-3 py-1 rounded bg-gold-500/10 text-gold-400 border border-gold-500/25 font-mono text-[10px] uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> SPECIMENS_DB: ONLINE
-          </span>
-          <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none bg-gradient-to-r from-white via-mineral-100 to-mineral-300 bg-clip-text">
+          <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none bg-clip-text">
             Colecciona la Belleza <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-gold-400 bg-clip-text text-transparent">Geométrica</span> de la Tierra
+            <span className="bg-clip-text text-transparent">Geométrica</span> de la Tierra
           </h1>
           <p className="text-lg text-mineral-300 max-w-xl font-light">
             Adquiere especímenes cristalinos auténticos y accede a la base científica más completa del mundo. Despachos rápidos y asegurados con certificados de autenticidad.
@@ -150,7 +111,7 @@ export const Shop: React.FC = () => {
           <div className="flex flex-wrap gap-4 pt-2">
             <a 
               href="#tienda"
-              className="px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-gold-500 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-bold rounded-xl shadow-lg transition-transform hover:scale-105"
+              className="px-8 py-3.5 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-bold rounded-xl shadow-lg transition-transform hover:scale-105"
             >
               Comprar Especímenes
             </a>
@@ -323,7 +284,7 @@ export const Shop: React.FC = () => {
                     <button
                       onClick={() => addToCart(mineral)}
                       disabled={mineral.stock <= 0}
-                      className="w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-bold transition-transform hover:scale-[1.02] flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-gold-500 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 disabled:bg-mineral-300 disabled:text-mineral-500 disabled:cursor-not-allowed shadow-md"
+                      className="w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-bold transition-transform hover:scale-[1.02] flex items-center justify-center space-x-2 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 disabled:bg-mineral-300 disabled:text-mineral-500 disabled:cursor-not-allowed shadow-md"
                     >
                       <ShoppingCart className="w-4 h-4" />
                       <span>{mineral.stock > 0 ? 'Añadir al Carrito' : 'Agotado'}</span>
@@ -368,7 +329,7 @@ export const Shop: React.FC = () => {
                       <ShoppingBag className="w-12 h-12 stroke-[1.5]" />
                       <p className="text-sm font-semibold text-center leading-normal">
                         Tu carrito está vacío.<br />
-                        Explora la E-Shop para añadir especímenes.
+                        Explora la tienda para añadir especímenes.
                       </p>
                     </div>
                   ) : (
@@ -439,13 +400,13 @@ export const Shop: React.FC = () => {
 
                     <button
                       onClick={handleCheckout}
-                      className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-gold-500 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-black rounded-xl shadow-lg transition-transform hover:scale-[1.01] flex items-center justify-center space-x-2"
+                      className="w-full py-3.5 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-black rounded-xl shadow-lg transition-transform hover:scale-[1.01] flex items-center justify-center space-x-2"
                     >
                       <ShieldCheck className="w-5 h-5" />
                       <span>Proceder a Comprar</span>
                     </button>
                     <p className="text-[10px] text-mineral-400 text-center leading-normal">
-                      Compra protegida por cifrado SSL. Garantía de retorno de 30 días si el espécimen no cumple con tu entera satisfacción.
+                      Garantía de retorno de 30 días si el espécimen no cumple con tu entera satisfacción.
                     </p>
                   </div>
                 )}
@@ -459,7 +420,7 @@ export const Shop: React.FC = () => {
       {/* 3. CHECKOUT SUCCESS MODAL (Prezi layout element) */}
       {checkoutSuccess && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mineral-950/80 backdrop-blur-md">
-          <div className="glass border border-emerald-500/20 max-w-md w-full p-8 rounded-3xl text-center space-y-6 shadow-2xl animate-float">
+          <div className="glass border border-emerald-500/20 max-w-md w-full p-8 rounded-3xl text-center space-y-6 shadow-2xl">
             <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto">
               <ShieldCheck className="w-8 h-8 text-emerald-500" />
             </div>
@@ -469,13 +430,13 @@ export const Shop: React.FC = () => {
                 ¡Compra Exitosa!
               </h2>
               <p className="text-sm text-mineral-500 dark:text-mineral-400">
-                Tu orden ha sido procesada con éxito en nuestro sistema de simulación.
+                El pedido se completo correctamente.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-mineral-100 dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-800 space-y-1.5">
               <div className="flex justify-between text-xs">
-                <span className="text-mineral-400">Número de Orden:</span>
+                <span className="text-mineral-400">Número de Pedido:</span>
                 <span className="font-mono font-bold text-mineral-800 dark:text-mineral-200">{orderNumber}</span>
               </div>
               <div className="flex justify-between text-xs">
@@ -484,9 +445,9 @@ export const Shop: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-xs text-mineral-450 dark:text-mineral-500 leading-relaxed">
+            {/* <p className="text-xs text-mineral-450 dark:text-mineral-500 leading-relaxed">
               Hemos enviado los detalles del despacho y el certificado digital de autenticidad mineralógica al correo del comprador. ¡Gracias por confiar en Mineralia!
-            </p>
+            </p> */}
 
             <button
               onClick={() => setCheckoutSuccess(false)}

@@ -22,7 +22,7 @@ export const Analytics: React.FC = () => {
       {/* Intro */}
       <div className="space-y-4 mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
-          Panel de <span className="bg-gradient-to-r from-emerald-500 to-gold-500 bg-clip-text text-transparent">Analíticas</span> y Estadísticas
+          Panel de <span className="bg-clip-text text-transparent">Analíticas</span> y Estadísticas
         </h1>
         <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
           Monitoreo en tiempo real de la actividad del portal, tráfico de usuarios, interacciones del carro de compras e indicadores técnicos de respuesta de la API.
@@ -115,7 +115,7 @@ export const Analytics: React.FC = () => {
                   </div>
                   <div className="w-full h-3 rounded bg-mineral-150 dark:bg-mineral-950/80 border border-mineral-200/30 dark:border-mineral-800/40 overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-sm transition-all duration-1000"
+                      className="h-full rounded-sm transition-all duration-1000"
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>

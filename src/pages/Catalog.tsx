@@ -68,7 +68,7 @@ export const Catalog: React.FC = () => {
       {/* Intro Header */}
       <div className="space-y-4 mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-mineral-800 dark:text-mineral-100">
-          Catálogo <span className="bg-gradient-to-r from-emerald-500 to-gold-500 bg-clip-text text-transparent">Científico</span> de Minerales
+          Catálogo <span className="bg-clip-text text-transparent">Científico</span> de Minerales
         </h1>
         <p className="text-sm text-mineral-500 dark:text-mineral-400 leading-relaxed">
           Consulta y estudia las propiedades cristaloquímicas oficiales de las especies aprobadas por la CNMNC (Asociación Mineralógica Internacional). Datos sincrónicos obtenidos en tiempo real de GeoAPIs.io.
