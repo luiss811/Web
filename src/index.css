@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-mineral-50 text-mineral-800 dark:bg-mineral-950 dark:text-mineral-100 transition-colors duration-200 font-sans antialiased;
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  /* Make glass and glass-card look like basic standard containers */
+  .glass {
+    @apply bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-800 shadow;
+  }
+  
+  .glass-card {
+    @apply bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-800 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow;
+  }
+
+  .text-glow-emerald {
+    text-shadow: none;
+  }
+  
+  .text-glow-gold {
+    text-shadow: none;
+  }
+
+  /* De-activate telemetry pattern to basic empty grid */
+  .sci-grid {
+    background: transparent;
+  }
+
+  /* De-activate target box corners to basic styling */
+  .sci-box, .sci-box-gold {
+    position: relative;
+  }
+  .sci-box::before, .sci-box::after, .sci-box-gold::before, .sci-box-gold::after {
+    display: none !important;
+  }
+
+  /* De-activate crosshairs for basic rendering */
+  .sci-crosshairs::before, .sci-crosshairs::after {
+    display: none !important;
+  }
+
+  /* Basic monospace elements */
+  .sci-label {
+    @apply font-mono text-xs uppercase text-mineral-500 dark:text-mineral-450;
+  }
+
+  .sci-value {
+    @apply font-mono font-semibold text-mineral-800 dark:text-mineral-100;
+  }
+
+  /* Basic scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-mineral-100 dark:bg-mineral-900;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-mineral-300 dark:bg-mineral-700 rounded hover:bg-mineral-400 dark:hover:bg-mineral-600;
+  }
+}
