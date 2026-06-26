@@ -164,7 +164,7 @@ export const Shop: React.FC = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-mineral-50 dark:bg-mineral-850 text-mineral-700 dark:text-mineral-200 border border-mineral-200 dark:border-mineral-800 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                <option value="default">Nombre (Por Defecto)</option>
+                <option value="default">Nombre</option>
                 <option value="price-asc">Precio: Menor a Mayor</option>
                 <option value="price-desc">Precio: Mayor a Menor</option>
                 <option value="rating">Calificación</option>
@@ -179,7 +179,7 @@ export const Shop: React.FC = () => {
             >
               <ShoppingCart className="w-5 h-5" />
               {cart.length > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 text-2xs rounded-full bg-emerald-500 dark:bg-emerald-600 text-white font-black animate-bounce shadow">
+                <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-1xs rounded-full bg-emerald-500 dark:bg-emerald-600 text-white font-black shadow">
                   {cart.reduce((acc, item) => acc + item.quantity, 0)}
                 </span>
               )}
@@ -209,8 +209,7 @@ export const Shop: React.FC = () => {
               <span>Intentar Reconexión</span>
             </button>
           </div>
-        ) : (
-          /* Products Grid */
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {sortedMinerals.length === 0 ? (
               <div className="col-span-full text-center py-20 text-mineral-400">
@@ -224,7 +223,6 @@ export const Shop: React.FC = () => {
                     mineral.rarity === 'Unico' ? 'sci-box-gold border border-gold-500/20' : 'sci-box'
                   }`}
                 >
-                  {/* Card Header & Rarity Badge */}
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-mineral-500 bg-mineral-100 dark:bg-mineral-950/60 px-2 py-0.5 border border-mineral-200/50 dark:border-mineral-800/50 rounded">
                       {mineral.crystalSystems || 'Desconocido'}
@@ -247,8 +245,6 @@ export const Shop: React.FC = () => {
                   {/* Mineral Aesthetic Image */}
                   <div className="flex justify-center items-center py-6 mb-4 bg-mineral-950/40 dark:bg-mineral-950/80 border border-mineral-200/30 dark:border-mineral-850/50 rounded-xl relative overflow-hidden sci-box sci-crosshairs">
                     <MineralVisual mineral={mineral} />
-                    <div className="absolute top-1 left-2 text-[7px] font-mono text-emerald-500/40 select-none">SCAN_X: 405</div>
-                    <div className="absolute bottom-1 right-2 text-[7px] font-mono text-emerald-500/40 select-none">ZOOM: 2.5X</div>
                   </div>
 
                   {/* Text details */}
@@ -349,7 +345,7 @@ export const Shop: React.FC = () => {
                               {item.mineral.name}
                             </h4>
                             <p className="text-xs text-mineral-400">
-                              ${item.mineral.price.toFixed(2)} USD
+                              ${item.mineral.price.toFixed(2)} MXN
                             </p>
                             
                             {/* Quantity controls */}
@@ -394,7 +390,7 @@ export const Shop: React.FC = () => {
                     <div className="flex justify-between items-center text-sm">
                       <span className="font-semibold text-mineral-500 dark:text-mineral-400">Subtotal:</span>
                       <span className="text-2xl font-black font-display text-emerald-500">
-                        ${cartTotal.toFixed(2)} USD
+                        ${cartTotal.toFixed(2)} MXN
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-[11px] text-mineral-400">

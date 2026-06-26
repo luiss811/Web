@@ -101,10 +101,10 @@ export const Header: React.FC = () => {
                       : 'text-mineral-600 dark:text-mineral-300 hover:bg-mineral-100/50 dark:hover:bg-mineral-900/50 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce' : ''}`} />
+                  <Icon className={`w-4 h-4 ${isActive}`} />
                   <span>{item.label}</span>
                   {item.id === 'shop' && cartItemsCount > 0 && (
-                    <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-emerald-500 text-white font-bold animate-pulse">
+                    <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-emerald-500 text-white font-bold">
                       {cartItemsCount}
                     </span>
                   )}

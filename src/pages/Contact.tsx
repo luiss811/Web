@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MessageSquare, MapPin, Send, CheckCircle2, Compass } from 'lucide-react';
+import { Mail, Phone, MessageSquare, MapPin, Send, CheckCircle2 } from 'lucide-react';
+import { MapComponent } from '../components/MapComponent';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -227,49 +228,16 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Styled Mock Map */}
-          <div className="glass-card overflow-hidden h-[300px] relative group border border-mineral-200 dark:border-mineral-800 sci-box">
-            {/* Grid Pattern Background simulating map topography */}
-            <div className="absolute inset-0 bg-mineral-950 flex items-center justify-center overflow-hidden">
-              {/* Fake topography contours using styled circles */}
-              <div className="absolute w-[600px] h-[600px] border border-emerald-500/10 rounded-full"></div>
-              <div className="absolute w-[450px] h-[450px] border border-gold-500/5 rounded-full"></div>
-              <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full"></div>
-              <div className="absolute w-[150px] h-[150px] border border-emerald-500/5 rounded-full"></div>
-              
-              {/* Fake roads and coordinates lines */}
-              <div className="absolute top-[20%] left-0 w-full h-[0.5px] bg-mineral-800/40"></div>
-              <div className="absolute top-[60%] left-0 w-full h-[0.5px] bg-mineral-800/40"></div>
-              <div className="absolute left-[30%] top-0 w-[0.5px] h-full bg-mineral-800/40"></div>
-              <div className="absolute left-[75%] top-0 w-[0.5px] h-full bg-mineral-800/40"></div>
-
-              {/* Pin indicator */}
-              <div className="absolute top-[48%] left-[48%] flex flex-col items-center justify-center z-10">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/30 border border-emerald-500 flex items-center justify-center relative shadow-lg">
-                  <MapPin className="w-4.5 h-4.5 text-white" />
-                </div>
-                {/* Floating tooltip */}
-                <div className="mt-2.5 px-3 py-1.5 rounded-lg glass text-3xs font-black text-mineral-800 dark:text-mineral-100 flex items-center space-x-1.5 shadow-md">
-                  <Compass className="w-3 h-3 text-gold-500" />
-                  <span>Sede Mineralia HQ</span>
-                </div>
-              </div>
-
-
-              <div className="absolute top-3 right-3 flex flex-col space-y-1">
-                <button className="w-7 h-7 rounded bg-mineral-950/80 text-white font-bold border border-mineral-800 text-xs flex items-center justify-center hover:bg-mineral-800">+</button>
-                <button className="w-7 h-7 rounded bg-mineral-950/80 text-white font-bold border border-mineral-800 text-xs flex items-center justify-center hover:bg-mineral-800">-</button>
-              </div>
-            </div>
-            
-            {/* Map footer card */}
-            <div className="absolute bottom-3 right-3 glass px-3 py-2 rounded-xl border border-white/10 max-w-[200px] pointer-events-none">
-              <span className="text-[9px] font-bold text-emerald-500 block uppercase">Centro de Investigación</span>
-              <p className="text-[10px] text-mineral-600 dark:text-mineral-300 font-light leading-tight mt-0.5">
-                Calle Geología Real #100, Querétaro, Qro.
-              </p>
-            </div>
-
+          {/* Interactive Google Map */}
+          <div className="h-[300px] overflow-hidden rounded-xl border border-mineral-200 dark:border-mineral-800 shadow-lg relative">
+            <MapComponent
+              apiKey="AIzaSyBCORaDyk1go3cDfKQNSM9-CS8wv12GSJM"
+              lat={20.651348}
+              lng={-100.396382}
+              zoom={16}
+              title="Canek tienda fisica"
+              address="Calle Geología Real #100, Querétaro, Qro."
+            />
           </div>
 
         </div>

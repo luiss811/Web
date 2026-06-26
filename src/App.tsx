@@ -2,6 +2,7 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { SupportWidget } from './components/SupportWidget';
 import { Shop } from './pages/Shop';
 import { Catalog } from './pages/Catalog';
 import { Analytics } from './pages/Analytics';
@@ -11,7 +12,6 @@ import { Legal } from './pages/Legal';
 const AppContent: React.FC = () => {
   const { currentPage } = useApp();
 
-  // Simple client-side page router based on context state
   const renderPage = () => {
     switch (currentPage) {
       case 'shop':
@@ -31,16 +31,12 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-mineral-50 dark:bg-mineral-950 text-mineral-800 dark:text-mineral-100 transition-colors duration-300">
-      {/* Sticky navigation header */}
-      <Header />
-      
-      {/* Main content body with transition class */}
+      <Header />      
       <main className="flex-grow transition-opacity duration-300 animate-fadeIn">
         {renderPage()}
       </main>
-
-      {/* Footer */}
       <Footer />
+      <SupportWidget />
     </div>
   );
 };
