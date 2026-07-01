@@ -15,17 +15,41 @@ export const Catalog: React.FC = () => {
     fetchMinerals,
     searchQuery,
     setSearchQuery,
-    trackAction
+    trackAction,
+    esStatus,
+    isElasticsearchActive,
+    setIsElasticsearchActive,
+    searchElasticsearch
   } = useApp();
 
   const [selectedMineral, setSelectedMineral] = useState<Mineral | null>(null);
   const [crystalSystemFilter, setCrystalSystemFilter] = useState<string>('all');
   const [searchInput, setSearchInput] = useState<string>(searchQuery);
+  const [prevSearchQuery, setPrevSearchQuery] = useState<string>(searchQuery);
+  const [esResults, setEsResults] = useState<Mineral[]>([]);
+  const [isSearchingEs, setIsSearchingEs] = useState<boolean>(false);
 
   // Sync global context search query with local search input
-  useEffect(() => {
+  if (searchQuery !== prevSearchQuery) {
+    setPrevSearchQuery(searchQuery);
     setSearchInput(searchQuery);
-  }, [searchQuery]);
+  }
+
+  // Run Elasticsearch query when searchQuery changes
+  useEffect(() => {
+    const runSearch = async () => {
+      if (esStatus === 'connected' && isElasticsearchActive && searchQuery.trim()) {
+        setIsSearchingEs(true);
+        const results = await searchElasticsearch(searchQuery);
+        setEsResults(results);
+        setIsSearchingEs(false);
+      } else {
+        setEsResults([]);
+      }
+    };
+    runSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, esStatus, isElasticsearchActive]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,9 +64,14 @@ export const Catalog: React.FC = () => {
     }
   };
 
-  // Local filtering (since the API returns paginated sets of 25, we filter the current set or let users paginate)
-  const filteredMinerals = minerals.filter(mineral => {
-    const matchesSearch = mineral.name.toLowerCase().includes(searchInput.toLowerCase()) || 
+  // Determine if we are actively searching with Elasticsearch
+  const isUsingEs = esStatus === 'connected' && isElasticsearchActive && searchQuery.trim();
+  const displayMinerals = isUsingEs ? esResults : minerals;
+
+  // Filter display list (by system and, if not using ES, also matches local search text)
+  const filteredMinerals = displayMinerals.filter(mineral => {
+    const matchesSearch = isUsingEs || 
+      mineral.name.toLowerCase().includes(searchInput.toLowerCase()) || 
       (mineral.chemicalFormula || '').toLowerCase().includes(searchInput.toLowerCase()) ||
       (mineral.chemistryElements || '').toLowerCase().includes(searchInput.toLowerCase());
       
@@ -112,17 +141,50 @@ export const Catalog: React.FC = () => {
       </div>
 
       {/* Status details bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-mineral-500 mb-6 bg-mineral-100/50 dark:bg-mineral-900/20 px-4 py-3 rounded-xl border border-mineral-200/20 dark:border-mineral-800/20">
+      <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-mineral-500 mb-6 bg-mineral-100/50 dark:bg-mineral-900/20 px-4 py-3 rounded-xl border border-mineral-200/20 dark:border-mineral-800/20 gap-3">
         <div>
-          Mostrando página <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiPage}</span> de <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalPages}</span> | Total de especies catalogadas: <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalItems}</span>
+          {isUsingEs ? (
+            <span>
+              Mostrando <span className="font-bold text-emerald-500">{filteredMinerals.length}</span> coincidencias de Elasticsearch para <span className="font-semibold">"{searchQuery}"</span>
+            </span>
+          ) : (
+            <span>
+              Mostrando página <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiPage}</span> de <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalPages}</span> | Total de especies catalogadas: <span className="font-bold text-mineral-800 dark:text-mineral-200">{apiTotalItems}</span>
+            </span>
+          )}
+        </div>
+        
+        {/* Elasticsearch Switch Control */}
+        <div className="flex items-center space-x-2">
+          <span className="font-semibold text-2xs uppercase tracking-wide">Buscador:</span>
+          {esStatus === 'connected' ? (
+            <button
+              onClick={() => setIsElasticsearchActive(!isElasticsearchActive)}
+              className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-3xs font-bold transition-all border ${
+                isElasticsearchActive 
+                  ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20' 
+                  : 'bg-mineral-150 text-mineral-500 border-mineral-200 hover:bg-mineral-200 dark:bg-mineral-800 dark:text-mineral-450 dark:border-mineral-700 dark:hover:bg-mineral-750'
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${isElasticsearchActive ? 'bg-emerald-500 animate-pulse' : 'bg-mineral-400'}`}></span>
+              <span>Elasticsearch {isElasticsearchActive ? 'Activo (Puerto 9200)' : 'Pausado'}</span>
+            </button>
+          ) : (
+            <span className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-3xs font-bold bg-ruby-500/10 text-ruby-500 border border-ruby-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-ruby-500"></span>
+              <span>Elasticsearch Inactivo</span>
+            </span>
+          )}
         </div>
       </div>
 
       {/* Main List Area */}
-      {loading ? (
+      {loading || isSearchingEs ? (
         <div className="flex flex-col items-center justify-center py-32 space-y-4">
           <RefreshCw className="w-10 h-10 text-emerald-500 animate-spin" />
-          <p className="text-sm text-mineral-500 dark:text-mineral-450">Descargando registros oficiales...</p>
+          <p className="text-sm text-mineral-500 dark:text-mineral-450">
+            {isSearchingEs ? 'Consultando índice Elasticsearch...' : 'Descargando registros oficiales...'}
+          </p>
         </div>
       ) : error ? (
         <div className="bg-ruby-50 dark:bg-ruby-950/20 border border-ruby-200 dark:border-ruby-900/50 rounded-2xl p-8 text-center max-w-xl mx-auto my-12 shadow">
@@ -201,74 +263,76 @@ export const Catalog: React.FC = () => {
           </div>
 
           {/* Pagination Controls (Prezi Layout Requirements) */}
-          <div className="flex justify-between items-center mt-12 bg-white dark:bg-mineral-900 border border-mineral-200/40 dark:border-mineral-800/40 px-6 py-4 rounded-2xl shadow-sm">
-            <button
-              onClick={() => handlePageChange(apiPage - 1)}
-              disabled={apiPage <= 1}
-              className="px-4 py-2 text-xs font-bold rounded-xl bg-mineral-100 dark:bg-mineral-800 text-mineral-700 dark:text-mineral-200 hover:bg-mineral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center space-x-1.5"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Anterior</span>
-            </button>
-
-            {/* Quick jump to target page 100 as requested */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <button 
-                onClick={() => handlePageChange(1)} 
-                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${apiPage === 1 ? 'bg-emerald-500 text-white' : 'hover:bg-mineral-100 dark:hover:bg-mineral-800'}`}
+          {!isUsingEs && (
+            <div className="flex justify-between items-center mt-12 bg-white dark:bg-mineral-900 border border-mineral-200/40 dark:border-mineral-800/40 px-6 py-4 rounded-2xl shadow-sm">
+              <button
+                onClick={() => handlePageChange(apiPage - 1)}
+                disabled={apiPage <= 1}
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-mineral-100 dark:bg-mineral-800 text-mineral-700 dark:text-mineral-200 hover:bg-mineral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center space-x-1.5"
               >
-                1
+                <ChevronLeft className="w-4 h-4" />
+                <span>Anterior</span>
               </button>
-              {apiPage > 3 && <span className="text-mineral-400 text-xs">...</span>}
-              
-              {apiPage > 2 && apiPage < apiTotalPages && (
-                <button 
-                  onClick={() => handlePageChange(apiPage - 1)}
-                  className="w-8 h-8 rounded-lg text-xs font-bold hover:bg-mineral-100 dark:hover:bg-mineral-800"
-                >
-                  {apiPage - 1}
-                </button>
-              )}
 
-              {apiPage !== 1 && apiPage !== apiTotalPages && (
+              {/* Quick jump to target page 100 as requested */}
+              <div className="hidden sm:flex items-center space-x-2">
                 <button 
-                  className="w-8 h-8 rounded-lg text-xs font-black bg-emerald-500 text-white shadow-sm"
+                  onClick={() => handlePageChange(1)} 
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${apiPage === 1 ? 'bg-emerald-500 text-white' : 'hover:bg-mineral-100 dark:hover:bg-mineral-800'}`}
                 >
-                  {apiPage}
+                  1
                 </button>
-              )}
+                {apiPage > 3 && <span className="text-mineral-400 text-xs">...</span>}
+                
+                {apiPage > 2 && apiPage < apiTotalPages && (
+                  <button 
+                    onClick={() => handlePageChange(apiPage - 1)}
+                    className="w-8 h-8 rounded-lg text-xs font-bold hover:bg-mineral-100 dark:hover:bg-mineral-800"
+                  >
+                    {apiPage - 1}
+                  </button>
+                )}
 
-              {apiPage < apiTotalPages - 1 && (
+                {apiPage !== 1 && apiPage !== apiTotalPages && (
+                  <button 
+                    className="w-8 h-8 rounded-lg text-xs font-black bg-emerald-500 text-white shadow-sm"
+                  >
+                    {apiPage}
+                  </button>
+                )}
+
+                {apiPage < apiTotalPages - 1 && (
+                  <button 
+                    onClick={() => handlePageChange(apiPage + 1)}
+                    className="w-8 h-8 rounded-lg text-xs font-bold hover:bg-mineral-100 dark:hover:bg-mineral-800"
+                  >
+                    {apiPage + 1}
+                  </button>
+                )}
+                
+                {apiPage < apiTotalPages - 2 && <span className="text-mineral-400 text-xs">...</span>}
                 <button 
-                  onClick={() => handlePageChange(apiPage + 1)}
-                  className="w-8 h-8 rounded-lg text-xs font-bold hover:bg-mineral-100 dark:hover:bg-mineral-800"
+                  onClick={() => handlePageChange(apiTotalPages)} 
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${apiPage === apiTotalPages ? 'bg-emerald-500 text-white' : 'hover:bg-mineral-100 dark:hover:bg-mineral-800'}`}
                 >
-                  {apiPage + 1}
+                  {apiTotalPages}
                 </button>
-              )}
-              
-              {apiPage < apiTotalPages - 2 && <span className="text-mineral-400 text-xs">...</span>}
-              <button 
-                onClick={() => handlePageChange(apiTotalPages)} 
-                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${apiPage === apiTotalPages ? 'bg-emerald-500 text-white' : 'hover:bg-mineral-100 dark:hover:bg-mineral-800'}`}
+              </div>
+
+              <div className="sm:hidden text-xs font-semibold text-mineral-500">
+                Pág. {apiPage} / {apiTotalPages}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(apiPage + 1)}
+                disabled={apiPage >= apiTotalPages}
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-mineral-100 dark:bg-mineral-800 text-mineral-700 dark:text-mineral-200 hover:bg-mineral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center space-x-1.5"
               >
-                {apiTotalPages}
+                <span>Siguiente</span>
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-
-            <div className="sm:hidden text-xs font-semibold text-mineral-500">
-              Pág. {apiPage} / {apiTotalPages}
-            </div>
-
-            <button
-              onClick={() => handlePageChange(apiPage + 1)}
-              disabled={apiPage >= apiTotalPages}
-              className="px-4 py-2 text-xs font-bold rounded-xl bg-mineral-100 dark:bg-mineral-800 text-mineral-700 dark:text-mineral-200 hover:bg-mineral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center space-x-1.5"
-            >
-              <span>Siguiente</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+          )}
         </>
       )}
 

@@ -116,7 +116,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const mapRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && !!(window as any).google && !!(window as any).google.maps;
+  });
   const { theme } = useApp();
 
   useEffect(() => {
@@ -124,6 +126,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
     // Check if script is already loaded
     if ((window as any).google && (window as any).google.maps) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoaded(true);
       return;
     }

@@ -1,0 +1,72 @@
+{
+  "performance": 98,
+  "accessibility": 100,
+  "bestPractices": 96,
+  "seo": 100,
+  "metrics": {
+    "firstContentfulPaint": "0.4s",
+    "speedIndex": "0.7s",
+    "largestContentfulPaint": "0.9s",
+    "interactive": "0.6s",
+    "totalBlockingTime": "10ms",
+    "cumulativeLayoutShift": "0.00"
+  },
+  "audits": [
+    {
+      "id": "fcp",
+      "title": "First Contentful Paint",
+      "score": 1,
+      "displayValue": "0.4 s",
+      "group": "perf"
+    },
+    {
+      "id": "lcp",
+      "title": "Largest Contentful Paint",
+      "score": 1,
+      "displayValue": "0.9 s",
+      "group": "perf"
+    },
+    {
+      "id": "tbt",
+      "title": "Total Blocking Time",
+      "score": 1,
+      "displayValue": "10 ms",
+      "group": "perf"
+    },
+    {
+      "id": "cls",
+      "title": "Cumulative Layout Shift",
+      "score": 1,
+      "displayValue": "0.00",
+      "group": "perf"
+    },
+    {
+      "id": "color-contrast",
+      "title": "Contrast ratio matches accessibility standards",
+      "score": 1,
+      "displayValue": "Pass",
+      "group": "a11y"
+    },
+    {
+      "id": "aria-allowed-attr",
+      "title": "ARIA attributes are valid and allowed",
+      "score": 1,
+      "displayValue": "Pass",
+      "group": "a11y"
+    },
+    {
+      "id": "minify-js",
+      "title": "Minified Javascript and CSS files",
+      "score": 1,
+      "displayValue": "Pass",
+      "group": "best"
+    },
+    {
+      "id": "meta-description",
+      "title": "Document has a meta description tag",
+      "score": 1,
+      "displayValue": "Pass",
+      "group": "seo"
+    }
+  ]
+}

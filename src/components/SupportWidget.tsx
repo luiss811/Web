@@ -30,7 +30,7 @@ export const SupportWidget: React.FC = () => {
     }
   }, [messages, isTyping]);
 
-  const handleSend = (e?: React.FormEvent) => {
+  const handleSend = (e?: React.SubmitEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
     if (!inputText.trim()) return;
 
@@ -216,7 +216,7 @@ export const SupportWidget: React.FC = () => {
               type="text"
               value={inputText}
               onChange={e => setInputText(e.target.value)}
-              placeholder="Escribe tu consulta técnica..."
+              placeholder="Escribe tu consulta tecnica..."
               className="flex-grow px-3 py-2 text-xs bg-slate-50 dark:bg-mineral-950/50 border border-mineral-200 dark:border-mineral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-mineral-800 dark:text-mineral-100"
             />
             <button

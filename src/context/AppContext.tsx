@@ -76,6 +76,11 @@ interface AppContextType {
   stats: SiteStats;
   trackAction: (action: keyof Omit<SiteStats, 'pageViews' | 'apiLatency'>) => void;
   trackLatency: (ms: number) => void;
+
+  esStatus: 'connected' | 'disconnected' | 'checking';
+  isElasticsearchActive: boolean;
+  setIsElasticsearchActive: (active: boolean) => void;
+  searchElasticsearch: (query: string) => Promise<Mineral[]>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -136,6 +141,95 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  const [esStatus, setEsStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking');
+  const [isElasticsearchActive, setIsElasticsearchActive] = useState<boolean>(true);
+
+  const checkElasticsearch = async () => {
+    try {
+      const response = await fetch('/elasticsearch');
+      if (response.ok) {
+        setEsStatus('connected');
+        console.log("Connected to Elasticsearch");
+      } else {
+        setEsStatus('disconnected');
+      }
+    } catch (err) {
+      setEsStatus('disconnected');
+    }
+  };
+
+  const indexMineralsInElasticsearch = async (items: Mineral[]) => {
+    try {
+      await Promise.all(items.map(async (mineral) => {
+        await fetch(`/elasticsearch/minerals/_doc/${mineral.identifier}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: mineral.name,
+            nameVariant: mineral.nameVariant,
+            description: mineral.description,
+            chemicalFormula: mineral.chemicalFormula,
+            chemistryElements: mineral.chemistryElements,
+            crystalSystems: mineral.crystalSystems,
+            imaNumber: mineral.imaNumber,
+            imaStatus: mineral.imaStatus,
+            price: mineral.price,
+            rating: mineral.rating,
+            stock: mineral.stock,
+            rarity: mineral.rarity,
+            accentColor: mineral.accentColor
+          })
+        });
+      }));
+      console.log(`Indexed ${items.length} minerals in Elasticsearch`);
+    } catch (err) {
+      console.error("Error indexing minerals in Elasticsearch:", err);
+    }
+  };
+
+  const searchElasticsearch = async (query: string): Promise<Mineral[]> => {
+    if (!query.trim()) return [];
+    try {
+      const response = await fetch('/elasticsearch/minerals/_search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: {
+            multi_match: {
+              query: query,
+              fields: ['name^3', 'chemicalFormula^2', 'chemistryElements', 'crystalSystems'],
+              fuzziness: 'AUTO'
+            }
+          },
+          size: 50
+        })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.hits && data.hits.hits) {
+          return data.hits.hits.map((hit: any) => ({
+            identifier: hit._id,
+            ...hit._source
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Search error in Elasticsearch:", err);
+    }
+    return [];
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    checkElasticsearch();
+  }, []);
+
+  useEffect(() => {
+    if (esStatus === 'connected' && minerals.length > 0) {
+      indexMineralsInElasticsearch(minerals);
+    }
+  }, [minerals, esStatus]);
+
   const [stats, setStats] = useState<SiteStats>(() => {
     const stored = localStorage.getItem('stats');
     return stored ? JSON.parse(stored) : {
@@ -168,22 +262,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('stats', JSON.stringify(stats));
   }, [stats]);
 
-  useEffect(() => {
-    setStats(prev => ({
-      ...prev,
-      pageViews: {
-        ...prev.pageViews,
-        [currentPage]: (prev.pageViews[currentPage] || 0) + 1
-      }
-    }));
-  }, [currentPage]);
-
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
   const navigateTo = (page: string) => {
     setCurrentPage(page);
+    setStats(prev => ({
+      ...prev,
+      pageViews: {
+        ...prev.pageViews,
+        [page]: (prev.pageViews[page] || 0) + 1
+      }
+    }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -274,7 +365,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMinerals(apiPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -302,7 +395,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       stats,
       trackAction,
-      trackLatency
+      trackLatency,
+
+      esStatus,
+      isElasticsearchActive,
+      setIsElasticsearchActive,
+      searchElasticsearch
     }}>
       {children}
     </AppContext.Provider>
