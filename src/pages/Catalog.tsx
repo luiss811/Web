@@ -212,7 +212,7 @@ export const Catalog: React.FC = () => {
               filteredMinerals.map(mineral => (
                 <div 
                   key={mineral.identifier}
-                  className="glass-card sci-box p-5 flex flex-col justify-between"
+                  className="glass-card spotlight-card sci-box p-5 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">

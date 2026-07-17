@@ -40,6 +40,55 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface ScheduledEvent {
+  id: string;
+  name: string;
+  startDate: string; // "MM-DD" format
+  endDate: string;   // "MM-DD" format
+  themeClass: string;
+  bannerTitle: string;
+  bannerDesc: string;
+  accentColors: {
+    from: string;
+    to: string;
+    glow: string;
+    badge: string;
+  };
+}
+
+export const campaigns: ScheduledEvent[] = [
+  {
+    id: 'gaia',
+    name: 'Día de Gaia',
+    startDate: '04-18',
+    endDate: '04-25',
+    themeClass: 'theme-earth',
+    bannerTitle: 'Día de Gaia',
+    bannerDesc: 'Celebra la asombrosa geoda de nuestro planeta. 10% de todas las ventas de especímenes ecológicos serán donadas a fundaciones de conservación ambiental.',
+    accentColors: {
+      from: 'from-emerald-600',
+      to: 'to-teal-600',
+      glow: 'rgba(16, 185, 129, 0.15)',
+      badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+    }
+  },
+  {
+    id: 'muertos',
+    name: 'Día de Muertos',
+    startDate: '10-25',
+    endDate: '11-02',
+    themeClass: 'theme-halloween',
+    bannerTitle: 'Día de Muertos',
+    bannerDesc: 'Descubre el poder de los minerales oscuros y protectores. Descuentos místicos en obsidiana arcoíris, amatistas profundas y turmalinas negras.',
+    accentColors: {
+      from: 'from-purple-650',
+      to: 'to-orange-550',
+      glow: 'rgba(139, 92, 246, 0.15)',
+      badge: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+    }
+  }
+];
+
 export interface SiteStats {
   pageViews: Record<string, number>;
   searchesCount: number;
@@ -72,6 +121,11 @@ interface AppContextType {
   
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  selectedCrystalSystem: string;
+  setSelectedCrystalSystem: (system: string) => void;
+  activeCampaign: ScheduledEvent | null;
+  eventoCalendarizadoId: string;
+  setEventoCalendarizadoId: (campaignId: string) => void;
   
   stats: SiteStats;
   trackAction: (action: keyof Omit<SiteStats, 'pageViews' | 'apiLatency'>) => void;
@@ -140,6 +194,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [apiTotalItems, setApiTotalItems] = useState<number>(9779);
   
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCrystalSystem, setSelectedCrystalSystem] = useState<string>('all');
+  const [eventoCalendarizadoId, setEventoCalendarizadoId] = useState<string>('system');
+
+  const getActiveCampaignByDate = (): ScheduledEvent | null => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const md = `${month}-${day}`; // "MM-DD"
+
+    for (const campaign of campaigns) {
+      if (campaign.startDate <= campaign.endDate) {
+        if (md >= campaign.startDate && md <= campaign.endDate) {
+          return campaign;
+        }
+      } else {
+        if (md >= campaign.startDate || md <= campaign.endDate) {
+          return campaign;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getActiveCampaign = (): ScheduledEvent | null => {
+    if (eventoCalendarizadoId === 'none') return null;
+    if (eventoCalendarizadoId === 'gaia') return campaigns.find(c => c.id === 'gaia') || null;
+    if (eventoCalendarizadoId === 'muertos') return campaigns.find(c => c.id === 'muertos') || null;
+    return getActiveCampaignByDate();
+  };
+
+  const activeCampaign = getActiveCampaign();
 
   const [esStatus, setEsStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking');
   const [isElasticsearchActive, setIsElasticsearchActive] = useState<boolean>(true);
@@ -392,6 +477,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       searchQuery,
       setSearchQuery,
+      selectedCrystalSystem,
+      setSelectedCrystalSystem,
+      activeCampaign,
+      eventoCalendarizadoId,
+      setEventoCalendarizadoId,
       
       stats,
       trackAction,

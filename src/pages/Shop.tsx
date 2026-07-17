@@ -4,7 +4,7 @@ import type { Mineral } from '../context/AppContext';
 import { ShoppingCart, Star, Trash2, ShieldCheck, RefreshCw, X, ShoppingBag } from 'lucide-react';
 
 // Beautiful geometric mineral visual representation based on crystal system and color
-export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'lg' }> = ({ mineral, size = 'md' }) => {  
+export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'lg' }> = ({ mineral, size = 'md' }) => {
   const sizeClasses = {
     sm: 'w-16 h-16',
     md: 'w-36 h-36',
@@ -13,7 +13,7 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
 
   // Build unique gradient based on the mineral color and system
   const color = mineral.accentColor;
-  
+
   // eslint-disable-next-line prefer-const
   let clipPath = '';
   // eslint-disable-next-line prefer-const
@@ -23,16 +23,16 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
   return (
     <div className={`relative flex items-center justify-center ${sizeClasses[size]}`}>
       {/* Background glow */}
-      <div 
+      <div
         className="absolute inset-0 scale-95 opacity-50 rounded-full blur-xl"
         style={{ backgroundColor: color }}
       ></div>
-      
+
       {/* Dynamic Crystal facet 1 */}
-      <div 
+      <div
         className="absolute inset-2 bg-gradient-to-tr from-white/20 via-transparent to-white/40 mix-blend-overlay border border-white/30"
-        style={{ 
-          clipPath, 
+        style={{
+          clipPath,
           boxShadow: shadowGlow,
         }}
       ></div>
@@ -42,7 +42,6 @@ export const MineralVisual: React.FC<{ mineral: Mineral; size?: 'sm' | 'md' | 'l
     </div>
   );
 };
-
 export const Shop: React.FC = () => {
   const {
     minerals,
@@ -56,6 +55,9 @@ export const Shop: React.FC = () => {
     updateCartQuantity,
     clearCart,
     trackAction,
+    selectedCrystalSystem,
+    setSelectedCrystalSystem,
+    activeCampaign,
   } = useApp();
 
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
@@ -67,8 +69,10 @@ export const Shop: React.FC = () => {
   const rarities = ['all', 'Comun', 'Raro', 'Exotico', 'Unico'];
 
   const filteredMinerals = minerals.filter(mineral => {
-    if (selectedRarity === 'all') return true;
-    return mineral.rarity === selectedRarity;
+    const matchesRarity = selectedRarity === 'all' || mineral.rarity === selectedRarity;
+    const matchesSystem = selectedCrystalSystem === 'all' ||
+      (mineral.crystalSystems && mineral.crystalSystems.toLowerCase().includes(selectedCrystalSystem.toLowerCase()));
+    return matchesRarity && matchesSystem;
   });
 
   const sortedMinerals = [...filteredMinerals].sort((a, b) => {
@@ -88,47 +92,173 @@ export const Shop: React.FC = () => {
     clearCart();
   };
 
+  const handleAddToCart = (mineral: Mineral) => {
+    addToCart(mineral);
+
+    if (activeCampaign && (activeCampaign.id === 'gaia' || activeCampaign.id === 'muertos')) {
+      const isGaia = activeCampaign.id === 'gaia';
+
+      const animEl = document.createElement('div');
+      animEl.className = "fixed z-[9999] pointer-events-none flex flex-col items-center justify-center p-6 bg-mineral-900/95 dark:bg-mineral-950/95 border border-mineral-700/50 rounded-2xl shadow-2xl backdrop-blur-md";
+      animEl.style.left = "50%";
+      animEl.style.top = "50%";
+      animEl.style.transform = "translate(-50%, -50%)";
+
+      const earthSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-earth"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"/><path d="M7 3.34V5a3 3 0 0 0 3 3v0a2 2 0 0 1 2 2v0c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2v0a2 2 0 0 1 2-2v0a2 2 0 0 0-2-2h-1.5"/><path d="M11.5 22H14a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2h-.27"/><path d="M3 14h3.3a2 2 0 0 1 1.9 2.7L7.5 19.3a2 2 0 0 0 1.9 2.7H11"/><circle cx="12" cy="12" r="10"/></svg>`;
+
+      const skullSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skull"><path d="M12 2a10 10 0 0 0-10 10c0 4.4 3.6 8 8 8H14c4.4 0 8-3.6 8-8A10 10 0 0 0 12 2Z"/><path d="M12 22v-2"/><path d="M9 16h6"/><path d="M10 10h.01"/><path d="M14 10h.01"/></svg>`;
+
+      animEl.innerHTML = `
+        <div class="flex flex-col items-center justify-center animate-cart-bounce">
+          ${isGaia ? earthSvg : skullSvg}
+          <span class="mt-3 text-sm font-bold text-white tracking-wide uppercase">
+            Mineral Agregado! :)
+          </span>
+        </div>
+      `;
+
+      document.body.appendChild(animEl);
+
+      const animation = animEl.animate([
+        { opacity: '0', transform: 'translate(-50%, calc(-50% + 40px)) scale(0.5)' },
+        { opacity: '1', transform: 'translate(-50%, -50%) scale(1.1)', offset: 0.15 },
+        { transform: 'translate(-50%, -50%) scale(1)', offset: 0.3 },
+        { opacity: '1', transform: 'translate(-50%, calc(-50% - 20px)) scale(1)', offset: 0.8 },
+        { opacity: '0', transform: 'translate(-50%, calc(-50% - 100px)) scale(0.8)' }
+      ], {
+        duration: 4000,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        fill: 'forwards'
+      });
+
+      const svgEl = animEl.querySelector('svg');
+      if (svgEl) {
+        if (isGaia) {
+          svgEl.animate([
+            { transform: 'rotate(0deg)' },
+            { transform: 'rotate(360deg)' }
+          ], {
+            duration: 6000,
+            iterations: Infinity,
+            easing: 'linear'
+          });
+        } else {
+          svgEl.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.1)' },
+            { transform: 'scale(1)' }
+          ], {
+            duration: 1000,
+            iterations: Infinity,
+            easing: 'ease-in-out'
+          });
+        }
+      }
+
+      animation.onfinish = () => {
+        animEl.remove();
+      };
+    }
+  };
+
   return (
     <div className="min-h-screen pb-20">
       
       {/* BANNER & CTA */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-mineral-900 to-mineral-950 text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border border-mineral-800 shadow-2xl sci-box-gold">
+      <section className={`relative overflow-hidden text-white py-20 px-6 sm:px-12 lg:px-24 mb-12 rounded-2xl mx-4 sm:mx-8 mt-6 border shadow-2xl transition-all duration-500 ${activeCampaign
+        ? (activeCampaign.id === 'gaia'
+          ? 'bg-gradient-to-r from-emerald-950 via-mineral-950 to-teal-950 border-emerald-800/40 shadow-emerald-500/5'
+          : 'bg-gradient-to-r from-purple-950 via-mineral-950 to-orange-950 border-purple-800/30 shadow-purple-500/5')
+        : 'bg-gradient-to-r from-mineral-900 to-mineral-950 border-mineral-800 shadow-gold-500/5'
+        }`}>
         <div className="absolute inset-0 overflow-hidden sci-grid opacity-30"></div>
         <div className="absolute inset-0 overflow-hidden">
           {/* Animated decorative graphics */}
-          <div className="absolute -top-1/2 -left-1/4 w-[700px] h-[700px] rounded-full bg-emerald-500/10 blur-[120px] animate-pulse-slow"></div>
-          <div className="absolute -bottom-1/2 -right-1/4 w-[700px] h-[700px] rounded-full bg-gold-500/10 blur-[120px] animate-pulse-slow"></div>
-          <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/SXlqp9cI9TSN8EVD/img_20251027_152656343_mfnr-Y170sgt6mcC1UUWI.jpg" alt="Canek Logo" className="" />
+          <div className={`absolute -top-1/2 -left-1/4 w-[700px] h-[700px] rounded-full blur-[120px] animate-pulse-slow transition-colors duration-500 ${activeCampaign
+            ? (activeCampaign.id === 'gaia' ? 'bg-emerald-500/10' : 'bg-purple-500/10')
+            : 'bg-emerald-500/10'
+            }`}></div>
+          <div className={`absolute -bottom-1/2 -right-1/4 w-[700px] h-[700px] rounded-full blur-[120px] animate-pulse-slow transition-colors duration-500 ${activeCampaign
+            ? (activeCampaign.id === 'gaia' ? 'bg-teal-500/10' : 'bg-orange-500/10')
+            : 'bg-gold-500/10'
+            }`}></div>
+          {activeCampaign ? (
+            activeCampaign.id === 'gaia' ? (
+              <>
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoMScapOb56wfNXewvdnLsuYB143BmQZM7VfJgvayqfRvmXHuFDXOBY8c&s=10"
+                  alt="Gaia"
+                  className={`absolute inset-0 w-full h-full object-cover duration-500`}
+                />
+              </>
+            ) : (
+              <>
+                <img
+                  src="https://thumbs.dreamstime.com/b/cristales-oscuros-y-relucientes-en-una-superficie-texturada-con-efecto-espumoso-descubra-la-belleza-de-los-brillantes-descansando-379493207.jpg"
+                  alt="Cristales oscuros"
+                  className={`absolute inset-0 w-full h-full object-cover duration-500`}
+                />
+              </>
+            )
+          ) : (
+            <>
+              <img
+                src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/SXlqp9cI9TSN8EVD/img_20251027_152656343_mfnr-Y170sgt6mcC1UUWI.jpg"
+                alt="Canek Logo"
+                className={`absolute inset-0 w-full h-full object-cover duration-500`}
+              />
+            </>
+          )}
         </div>
         
         {/* Telemetry labels */}
         <div className="relative max-w-4xl z-10 space-y-6">
           <div className="relative max-w-4xl z-10 space-y-6">
-            <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none bg-gradient-to-r from-white via-mineral-400 to-mineral-800 bg-clip-text">
-            Colecciona la Belleza <br />
-            <span className="bg-clip-text text-transparent">Geométrica</span> de la Tierra
-          </h1>
-            <p className="text-lg text-mineral-100 max-w-xl ">
-            Adquiere especímenes cristalinos auténticos y accede a la base científica más completa del mundo. Despachos rápidos y asegurados con certificados de autenticidad.
-          </p>
-          <div className="flex flex-wrap gap-4 pt-2">
-            <a 
-              href="#tienda"
-              className="px-8 py-3.5 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 font-bold rounded-xl shadow-lg transition-transform hover:scale-105"
-            >
-              Comprar Especímenes
-            </a>
-            <button 
-              onClick={() => {
-                const el = document.getElementById('tienda');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-8 py-3.5 bg-mineral-800/80 hover:bg-mineral-800 text-white font-bold rounded-xl border border-mineral-700 transition-colors"
-            >
-              Ver Ofertas
-            </button>
+            <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none text-white">
+              {activeCampaign ? (
+                activeCampaign.id === 'gaia' ? (
+                  <>
+                    Día de <br />
+                    <span className="text-emerald-400">Gaia</span>
+                  </>
+                ) : (
+                  <>
+                    Día de <br />
+                    <span className="text-purple-400">Muertos</span>
+                  </>
+                )
+              ) : (
+                <>
+                  Colecciona la Belleza <br /> Geometrica de la Tierra
+                </>
+              )}
+            </h1>
+            <p className="text-lg text-mineral-100 max-w-xl transition-all duration-500">
+              {activeCampaign ? activeCampaign.bannerDesc : 'Adquiere especimenes cristalinos autenticos y accede a la base cientifica más completa del mundo. Despachos rapidos y asegurados con certificados de autenticidad.'}
+            </p>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <a
+                href="#tienda"
+                className={`px-8 py-3.5 text-mineral-950 font-bold rounded-xl shadow-lg transition-all hover:scale-105 text-center ${activeCampaign
+                  ? (activeCampaign.id === 'gaia'
+                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                    : 'bg-purple-600 hover:bg-purple-700 text-white')
+                  : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                  }`}
+              >
+                Comprar Especimenes
+              </a>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('tienda');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-3.5 bg-mineral-800/80 hover:bg-mineral-800 text-white font-bold rounded-xl border border-mineral-700 transition-colors"
+              >
+                Ver Ofertas
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </section>
 
@@ -153,6 +283,20 @@ export const Shop: React.FC = () => {
                 {rarity === 'all' ? 'Todos' : rarity}
               </button>
             ))}
+
+            {/* Crystal System Active Badge */}
+            {selectedCrystalSystem !== 'all' && (
+              <div className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-gold-400 border border-emerald-500/20 animate-fadeIn ml-2">
+                <span>Sistema: <span className="capitalize">{selectedCrystalSystem}</span></span>
+                <button
+                  onClick={() => setSelectedCrystalSystem('all')}
+                  className="hover:text-ruby-500 dark:hover:text-ruby-400 transition-colors font-extrabold focus:outline-none ml-1"
+                  title="Quitar filtro de sistema"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Sorters & Actions */}
@@ -219,7 +363,7 @@ export const Shop: React.FC = () => {
               sortedMinerals.map(mineral => (
                 <div 
                   key={mineral.identifier}
-                  className={`glass-card flex flex-col justify-between p-5 group ${
+                  className={`glass-card spotlight-card flex flex-col justify-between p-5 group ${
                     mineral.rarity === 'Unico' ? 'sci-box-gold border border-gold-500/20' : 'sci-box'
                   }`}
                 >
@@ -242,9 +386,15 @@ export const Shop: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Mineral Aesthetic Image */}
-                  <div className="flex justify-center items-center py-6 mb-4 bg-mineral-950/40 dark:bg-mineral-950/80 border border-mineral-200/30 dark:border-mineral-850/50 rounded-xl relative overflow-hidden sci-box sci-crosshairs">
-                    <MineralVisual mineral={mineral} />
+                  <div className="flex justify-center items-center py-6 mb-4 border border-mineral-200/30 dark:border-mineral-850/50 rounded-xl relative overflow-hidden sci-box sci-crosshairs">
+                    <img src={`${mineral.crystalSystems === 'cubic' ? '/src/assets/cubico.png' :
+                        mineral.crystalSystems === 'hexagonal' ? '/src/assets/hexagonal.png' :
+                          mineral.crystalSystems === 'tetragonal' ? '/src/assets/tetragonal.png' :
+                            mineral.crystalSystems === 'orthorhombic' ? '/src/assets/otorrombico.png' :
+                              mineral.crystalSystems === 'monoclinic' ? '/src/assets/monoclinico.png' :
+                              mineral.crystalSystems === 'triclinic' ? '/src/assets/triclinico.png' :
+                                  ''
+                      }`} />
                   </div>
 
                   {/* Text details */}
@@ -282,7 +432,7 @@ export const Shop: React.FC = () => {
 
                     {/* Add to Cart CTA */}
                     <button
-                      onClick={() => addToCart(mineral)}
+                      onClick={() => handleAddToCart(mineral)}
                       disabled={mineral.stock <= 0}
                       className="w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-display transition-transform hover:scale-[1.02] flex items-center justify-center space-x-2 hover:from-emerald-600 hover:to-gold-600 text-mineral-950 disabled:bg-mineral-300 disabled:text-mineral-500 disabled:cursor-not-allowed shadow-md"
                     >
@@ -339,7 +489,7 @@ export const Shop: React.FC = () => {
                         className="flex items-center justify-between p-3 rounded-xl bg-mineral-50/50 dark:bg-mineral-950/20 border border-mineral-200/30 dark:border-mineral-800/30"
                       >
                         <div className="flex items-center space-x-3">
-                          <MineralVisual mineral={item.mineral} size="sm" />
+
                           <div className="space-y-1">
                             <h4 className="text-sm font-bold truncate max-w-[140px]">
                               {item.mineral.name}
