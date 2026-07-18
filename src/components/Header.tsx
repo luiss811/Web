@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { Search, ShoppingCart, Sun, Moon, Menu, X, ShieldAlert } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -17,6 +18,8 @@ export const Header: React.FC = () => {
     eventoCalendarizadoId,
     setEventoCalendarizadoId
   } = useApp();
+
+  const { user, logout, hasPermission } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
@@ -89,11 +92,16 @@ export const Header: React.FC = () => {
       navigateTo('catalog');
     }
   };
-  const navItems = [
-    { id: 'shop', label: 'Shop' },
-    { id: 'catalog', label: 'Catálogo' },
-    { id: 'contact', label: 'Contacto' },
-  ];
+  const navItems: { id: string; label: string }[] = [];
+  if (!user) {
+    navItems.push({ id: 'shop', label: 'Shop' });
+    navItems.push({ id: 'catalog', label: 'Catálogo' });
+  } else {
+    if (hasPermission('ver_tienda')) navItems.push({ id: 'shop', label: 'Shop' });
+    if (hasPermission('ver_catalogo')) navItems.push({ id: 'catalog', label: 'Catálogo' });
+    if (hasPermission('ver_contacto')) navItems.push({ id: 'contact', label: 'Contacto' });
+    if (hasPermission('ver_metricas')) navItems.push({ id: 'analytics', label: 'Analíticas' });
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full transition-all duration-300 glass border-b border-mineral-200/30 dark:border-mineral-800/40">
@@ -117,7 +125,7 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Description Tagline */}
-          <div className="hidden lg:flex flex-col max-w-xs text-left leading-tight ml-4 border-l border-mineral-200 dark:border-mineral-800 pl-4">
+          <div className="hidden lg:flex md:flex flex-col max-w-xs text-left leading-tight ml-4 border-l border-mineral-200 dark:border-mineral-800 pl-4">
             <span className="text-[15px] text-mineral-500 dark:text-mineral-100">
               Compra y aprende de los cristales más raros de la Tierra.
             </span>
@@ -230,6 +238,33 @@ export const Header: React.FC = () => {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5 text-gold-400" /> : <Moon className="w-5 h-5 text-mineral-600" />}
             </button>
+
+            {/* Autenticación en Desktop */}
+            {user ? (
+              <div className="flex items-center space-x-3 ml-4 border-l border-mineral-200/50 dark:border-mineral-800/50 pl-4">
+                <div className="flex flex-col text-right leading-none">
+                  <span className="text-[12px] font-bold text-mineral-800 dark:text-white truncate max-w-[120px]">
+                    {user.nombre}
+                  </span>
+                  <span className="text-[9px] font-bold text-emerald-600 dark:text-gold-400 uppercase tracking-wider mt-0.5">
+                    {user.roles[0]}
+                  </span>
+                </div>
+                <button
+                  onClick={logout}
+                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-mineral-100/80 dark:bg-mineral-900/80 border border-mineral-200/40 dark:border-mineral-800/40 hover:bg-rose-500/10 hover:text-rose-500 dark:hover:text-rose-450 transition-all cursor-pointer"
+                >
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => handleNavClick('auth')}
+                className="px-4 py-2 ml-4 rounded-xl text-xs font-bold text-white transition-all shadow-md active:scale-[0.97] cursor-pointer"
+              >
+                Ingresar
+              </button>
+            )}
           </nav>
 
           {/* Mobile buttons */}
@@ -376,6 +411,37 @@ export const Header: React.FC = () => {
                 <option value="none" className="bg-white dark:bg-mineral-950 text-mineral-800 dark:text-mineral-100">Desactivado</option>
               </select>
             </div>
+
+            {/* Autenticación en Móvil */}
+            {user ? (
+              <div className="flex flex-col space-y-2 p-3 mt-4 rounded-xl bg-mineral-100/50 dark:bg-mineral-900/40 border border-mineral-200/25 dark:border-mineral-800/25">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-mineral-800 dark:text-white">{user.nombre}</span>
+                    <span className="text-[9px] font-bold text-emerald-600 dark:text-gold-400 uppercase tracking-wider mt-0.5">{user.roles[0]}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2 rounded-lg text-center text-xs font-bold bg-rose-500/15 text-rose-600 dark:text-rose-450 transition-all cursor-pointer"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  handleNavClick('auth');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 mt-4 rounded-lg text-center text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-650 text-white transition-all cursor-pointer"
+              >
+                Iniciar Sesión
+              </button>
+            )}
           </div>
         </div>
       )}

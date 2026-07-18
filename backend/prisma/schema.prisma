@@ -1,0 +1,61 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id        String       @id @default(uuid())
+  email     String       @unique
+  password  String
+  nombre    String
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  roles     UsuarioRol[]
+
+  @@map("usuarios")
+}
+
+model Rol {
+  id          String        @id @default(uuid())
+  nombre      String        @unique
+  descripcion String?
+  usuarios    UsuarioRol[]
+  permisos    RolPermiso[]
+
+  @@map("roles")
+}
+
+model Permiso {
+  id          String       @id @default(uuid())
+  nombre      String       @unique
+  descripcion String?
+  roles       RolPermiso[]
+
+  @@map("permisos")
+}
+
+model UsuarioRol {
+  id        String   @id @default(uuid())
+  usuarioId String   @map("usuario_id")
+  rolId     String   @map("rol_id")
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol       Rol      @relation(fields: [rolId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, rolId])
+  @@map("usuario_rol")
+}
+
+model RolPermiso {
+  id        String   @id @default(uuid())
+  rolId     String   @map("rol_id")
+  permisoId String   @map("permiso_id")
+  rol       Rol      @relation(fields: [rolId], references: [id], onDelete: Cascade)
+  permiso   Permiso  @relation(fields: [permisoId], references: [id], onDelete: Cascade)
+
+  @@unique([rolId, permisoId])
+  @@map("rol_permiso")
+}

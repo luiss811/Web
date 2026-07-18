@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { SupportWidget } from './components/SupportWidget';
@@ -9,6 +10,7 @@ import { Catalog } from './pages/Catalog';
 import { Analytics } from './pages/Analytics';
 import { Contact } from './pages/Contact';
 import { Legal } from './pages/Legal';
+import { AuthPage } from './pages/AuthPage';
 
 interface Particle {
   id: number;
@@ -65,10 +67,82 @@ const CampaignParticles: React.FC<{ type: 'gaia' | 'muertos' }> = ({ type }) => 
   );
 };
 
+const AccessDenied: React.FC<{ type: 'login' | 'unauthorized'; requiredPermission: string }> = ({ type, requiredPermission }) => {
+  const { navigateTo } = useApp();
+  
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
+      <div className="max-w-md w-full glass rounded-3xl border border-rose-500/20 p-8 shadow-xl text-center relative overflow-hidden">
+
+        <h3 className="text-2xl font-black font-display text-mineral-800 dark:text-white mb-2">
+          {type === 'login' ? 'Inicia sesion o registrate' : 'Acceso Denegado'}
+        </h3>
+        <p className="text-sm text-mineral-505 dark:text-mineral-400 mb-6 leading-relaxed">
+          {type === 'login' 
+            ? 'Para ingresar a este módulo necesitas iniciar sesión con una cuenta autorizada.'
+            : `Tu rol actual no posee los permisos necesarios (${requiredPermission}) para acceder a esta pagina.`
+          }
+        </p>
+        <div className="flex flex-col gap-3">
+          {type === 'login' ? (
+            <button
+              onClick={() => navigateTo('auth')}
+              className="w-full py-3  font-bold rounded-xl shadow-md cursor-pointer transition-all"
+            >
+              Iniciar Sesión
+            </button>
+          ) : (
+            <button
+              onClick={() => navigateTo('auth')}
+              className="w-full py-3 bg-mineral-100 dark:bg-mineral-900 border border-mineral-200/50 dark:border-mineral-800/50 text-mineral-700 dark:text-mineral-200 font-bold rounded-xl cursor-pointer hover:bg-mineral-200 transition-all"
+            >
+              Cambiar de Cuenta
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AppContent: React.FC = () => {
   const { currentPage, activeCampaign } = useApp();
+  const { user, hasPermission, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-mineral-50 dark:bg-mineral-950">
+        <div className="flex flex-col items-center">
+          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-xs font-bold text-mineral-500 dark:text-mineral-450 uppercase tracking-widest animate-pulse">
+            Verificando credenciales de seguridad...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mapa de permisos para cada página protegida
+  const permissionsMap: Record<string, string> = {
+    shop: 'ver_tienda',
+    catalog: 'ver_catalogo',
+    analytics: 'ver_metricas',
+    contact: 'ver_contacto',
+    legal: 'ver_legal',
+  };
 
   const renderPage = () => {
+    const requiredPermission = permissionsMap[currentPage];
+    
+    // Si la ruta requiere un permiso y el usuario no lo tiene, bloquear
+    if (requiredPermission && !hasPermission(requiredPermission)) {
+      if (!user) {
+        return <AccessDenied type="login" requiredPermission={requiredPermission} />;
+      } else {
+        return <AccessDenied type="unauthorized" requiredPermission={requiredPermission} />;
+      }
+    }
+
     switch (currentPage) {
       case 'shop':
         return <Shop />;
@@ -80,6 +154,8 @@ const AppContent: React.FC = () => {
         return <Contact />;
       case 'legal':
         return <Legal />;
+      case 'auth':
+        return <AuthPage />;
       default:
         return <Shop />;
     }
@@ -103,9 +179,11 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
+    </AuthProvider>
   );
 }
 
