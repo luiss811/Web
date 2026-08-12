@@ -115,7 +115,7 @@ export const Header: React.FC = () => {
             className="flex items-center space-x-3 cursor-pointer group"
           >
             <div className="relative flex items-center justify-center w-12 h-12 rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300">
-              <img src="/src/assets/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
+              <img src="/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-emerald-500 to-gold-500 blur-sm opacity-50 group-hover:opacity-80 transition-opacity"></div>
             </div>
             <div>

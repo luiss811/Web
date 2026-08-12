@@ -387,12 +387,12 @@ export const Shop: React.FC = () => {
                   </div>
 
                   <div className="flex justify-center items-center py-6 mb-4 border border-mineral-200/30 dark:border-mineral-850/50 rounded-xl relative overflow-hidden sci-box sci-crosshairs">
-                    <img src={`${mineral.crystalSystems === 'cubic' ? '/src/assets/cubico.png' :
-                        mineral.crystalSystems === 'hexagonal' ? '/src/assets/hexagonal.png' :
-                          mineral.crystalSystems === 'tetragonal' ? '/src/assets/tetragonal.png' :
-                            mineral.crystalSystems === 'orthorhombic' ? '/src/assets/otorrombico.png' :
-                              mineral.crystalSystems === 'monoclinic' ? '/src/assets/monoclinico.png' :
-                              mineral.crystalSystems === 'triclinic' ? '/src/assets/triclinico.png' :
+                    <img src={`${mineral.crystalSystems === 'cubic' ? '/cubico.png' :
+                        mineral.crystalSystems === 'hexagonal' ? '/hexagonal.png' :
+                          mineral.crystalSystems === 'tetragonal' ? '/tetragonal.png' :
+                            mineral.crystalSystems === 'orthorhombic' ? '/otorrombico.png' :
+                              mineral.crystalSystems === 'monoclinic' ? '/monoclinico.png' :
+                              mineral.crystalSystems === 'triclinic' ? '/triclinico.png' :
                                   ''
                       }`} />
                   </div>

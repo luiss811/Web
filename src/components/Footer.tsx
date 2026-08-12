@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
               className="flex items-center space-x-2.5 cursor-pointer group w-fit"
             >
               <div className="w-9 h-9 rounded-lg items-center justify-center">
-                <img src="/src/assets/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
+                <img src="/canek.png" alt="Canek Logo" className="w-8 h-8 relative z-10" />
               </div>
               <span className="text-xl font-black tracking-widest font-display bg-clip-text text-transparent">
                 Canek
