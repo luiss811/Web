@@ -243,6 +243,14 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
       });
     }
 
+    // Verificar si la cuenta se encuentra deshabilitada
+    if (user.habilitado === false) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acceso denegado: Su cuenta se encuentra deshabilitada. Póngase en contacto con el administrador del sistema.'
+      });
+    }
+
     // Verificar la contraseña cifrada
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -337,6 +345,7 @@ app.get('/api/admin/users', authenticateToken, requirePermission('ver_admin'), a
         id: true,
         email: true,
         nombre: true,
+        habilitado: true,
         createdAt: true,
         roles: {
           select: {
@@ -347,13 +356,15 @@ app.get('/api/admin/users', authenticateToken, requirePermission('ver_admin'), a
             }
           }
         }
-      }
+      },
+      orderBy: { createdAt: 'desc' }
     });
 
     const formattedUsers = users.map(u => ({
       id: u.id,
       email: u.email,
       nombre: u.nombre,
+      habilitado: u.habilitado ?? true,
       createdAt: u.createdAt,
       roles: u.roles.map(r => r.rol.nombre)
     }));
@@ -366,6 +377,51 @@ app.get('/api/admin/users', authenticateToken, requirePermission('ver_admin'), a
     return res.status(500).json({
       success: false,
       message: 'Error al obtener los usuarios del sistema.'
+    });
+  }
+});
+
+// Endpoint para alternar el estado habilitado/deshabilitado de un usuario
+app.put('/api/admin/users/:id/toggle-status', authenticateToken, requirePermission('ver_admin'), async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { habilitado } = req.body;
+
+  try {
+    const userToUpdate = await prisma.usuario.findUnique({
+      where: { id }
+    });
+
+    if (!userToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado.'
+      });
+    }
+
+    const newHabilitado = typeof habilitado === 'boolean' ? habilitado : !userToUpdate.habilitado;
+
+    const updatedUser = await prisma.usuario.update({
+      where: { id },
+      data: { habilitado: newHabilitado }
+    });
+
+    const actionText = updatedUser.habilitado ? 'habilitada' : 'deshabilitada';
+
+    return res.json({
+      success: true,
+      message: `La cuenta de ${updatedUser.nombre} ha sido ${actionText} correctamente.`,
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        nombre: updatedUser.nombre,
+        habilitado: updatedUser.habilitado
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar estado del usuario:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al cambiar el estado del usuario en la base de datos.'
     });
   }
 });

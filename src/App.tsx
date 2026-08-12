@@ -11,6 +11,7 @@ import { Analytics } from './pages/Analytics';
 import { Contact } from './pages/Contact';
 import { Legal } from './pages/Legal';
 import { AuthPage } from './pages/AuthPage';
+import { AdminUserManagement } from './components/AdminUserManagement';
 
 interface Particle {
   id: number;
@@ -129,6 +130,7 @@ const AppContent: React.FC = () => {
     analytics: 'ver_metricas',
     contact: 'ver_contacto',
     legal: 'ver_legal',
+    'admin-users': 'ver_admin'
   };
 
   const renderPage = () => {
@@ -156,6 +158,8 @@ const AppContent: React.FC = () => {
         return <Legal />;
       case 'auth':
         return <AuthPage />;
+      case 'admin-users':
+        return <AdminUserManagement />;
       default:
         return <Shop />;
     }

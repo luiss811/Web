@@ -188,7 +188,7 @@ export const Footer: React.FC = () => {
         {/* Footer Bottom (Legal and copyright) */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 space-y-4 md:space-y-0 text-xs text-mineral-500 dark:text-mineral-400">
           <div>
-            &copy; {new Date().getFullYear()} Mineralia S.A. de C.V. Todos los derechos reservados.
+            v1.1.3 - &copy; {new Date().getFullYear()} Mineralia S.A. de C.V. Todos los derechos reservados.
           </div>
           <div className="flex items-center space-x-6">
             <button 

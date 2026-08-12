@@ -28,11 +28,12 @@ async function main() {
     console.log(`Permiso configurado: ${perm.nombre}`);
   }
 
-  // 2. Definir los roles requeridos
+  // 2. Definir los roles requeridos (Incluye rol Invitado)
   const rolesData = [
     { nombre: 'Administrador', descripcion: 'Acceso total al sistema y configuraciones' },
     { nombre: 'Editor', descripcion: 'Acceso para gestionar tienda, catálogo, contacto y legal' },
-    { nombre: 'Usuario', descripcion: 'Acceso básico para comprar y explorar catálogo' }
+    { nombre: 'Usuario', descripcion: 'Acceso básico para comprar y explorar catálogo' },
+    { nombre: 'Invitado', descripcion: 'Acceso restringido de lectura para invitados y visitantes' }
   ];
 
   const rolesMap: Record<string, any> = {};
@@ -86,12 +87,43 @@ async function main() {
   }
   console.log('Permisos asignados a Usuario.');
 
-  // 4. Crear usuarios de prueba por defecto
+  // Invitado tiene ver_catalogo
+  const invitadoPerms = ['ver_catalogo'];
+  for (const permName of invitadoPerms) {
+    await prisma.rolPermiso.create({
+      data: {
+        rolId: rolesMap['Invitado'].id,
+        permisoId: permisosMap[permName].id
+      }
+    });
+  }
+  console.log('Permisos asignados a Invitado.');
+
+  // 4. Crear hashes de contraseña
+  const sharedPasswordHash = await bcrypt.hash('P@ssword2026!', 10);
   const passwordHashAdmin = await bcrypt.hash('adminpassword', 10);
   const passwordHashEditor = await bcrypt.hash('editorpassword', 10);
-  const passwordHashUser = await bcrypt.hash('userpassword', 10);
 
-  const testUsers = [
+  // 5. Lista de usuarios a insertar (incluye Alumno Luis, Alumno Ivanna e Invitado)
+  const usersToInsert = [
+    {
+      email: 'luis@canek.com',
+      nombre: 'Alumno Luis',
+      password: sharedPasswordHash,
+      rol: 'Usuario'
+    },
+    {
+      email: 'ivanna@canek.com',
+      nombre: 'Alumno Ivanna',
+      password: sharedPasswordHash,
+      rol: 'Usuario'
+    },
+    {
+      email: 'invitado@canek.com',
+      nombre: 'Invitado',
+      password: sharedPasswordHash,
+      rol: 'Invitado'
+    },
     {
       email: 'admin@canek.com',
       nombre: 'Administrador Canek',
@@ -103,16 +135,10 @@ async function main() {
       nombre: 'Editor Canek',
       password: passwordHashEditor,
       rol: 'Editor'
-    },
-    {
-      email: 'user@canek.com',
-      nombre: 'Usuario Canek',
-      password: passwordHashUser,
-      rol: 'Usuario'
     }
   ];
 
-  for (const u of testUsers) {
+  for (const u of usersToInsert) {
     // Buscar o crear usuario
     let dbUser = await prisma.usuario.findUnique({
       where: { email: u.email }
@@ -126,7 +152,7 @@ async function main() {
           password: u.password
         }
       });
-      console.log(`Usuario creado: ${u.email}`);
+      console.log(`Usuario creado: ${u.nombre} (${u.email})`);
     } else {
       // Actualizar datos
       dbUser = await prisma.usuario.update({
@@ -136,11 +162,10 @@ async function main() {
           password: u.password
         }
       });
-      console.log(`Usuario actualizado: ${u.email}`);
+      console.log(`Usuario actualizado: ${u.nombre} (${u.email})`);
     }
 
     // Vincular rol
-    // Limpiar roles anteriores para evitar duplicados
     await prisma.usuarioRol.deleteMany({
       where: { usuarioId: dbUser.id }
     });
@@ -151,10 +176,10 @@ async function main() {
         rolId: rolesMap[u.rol].id
       }
     });
-    console.log(`Rol ${u.rol} asignado a ${u.email}`);
+    console.log(`Rol "${u.rol}" asignado a ${u.nombre}`);
   }
 
-  console.log('Siembra de base de datos completada exitosamente.');
+  console.log('Siembra de base de datos completada exitosamente con los usuarios e invitado.');
 }
 
 main()

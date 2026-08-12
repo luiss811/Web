@@ -18,21 +18,14 @@ export const PointerHighlight: React.FC = () => {
 
       const target = e.target as HTMLElement;
       const isHoveringInteractive = !!target.closest('a, button, select, input, [role="button"], .spotlight-card, .glass-card');
-      /* eslint-disable no-useless-assignment */
-      let x = 0;
-      let y = 0;
 
       if (isHoveringInteractive) {
         follower.classList.add('hovering');
-        x = e.clientX - 180;
-        y = e.clientY - 180;
       } else {
         follower.classList.remove('hovering');
-        x = e.clientX - 180;
-        y = e.clientY - 180;
       }
 
-      follower.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      follower.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
 
       const card = target.closest('.spotlight-card') as HTMLElement;
       if (card) {

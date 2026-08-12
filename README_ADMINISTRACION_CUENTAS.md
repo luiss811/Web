@@ -331,7 +331,7 @@ Se ha completado el comando correctamente.
 
 ---
 
-### 4. ¿Qué sucede con los archivos personales de un usuario deshabilitado?
+### 4. ¿Qué suceder con los archivos personales de un usuario deshabilitado?
 - Los archivos almacenados en la carpeta del perfil del usuario (ej. `C:\Users\NombreUsuario` o `/home/nombreusuario`) **permanecen intactos en el almacenamiento físico**.
 - Sus listas de control de acceso (NTFS ACLs / POSIX permissions) continúan apuntando al SID/UID del usuario deshabilitado.
 - El usuario **no puede acceder a sus archivos** porque no puede iniciar sesión para obtener su token de acceso.

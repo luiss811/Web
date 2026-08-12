@@ -101,6 +101,7 @@ export const Header: React.FC = () => {
     if (hasPermission('ver_catalogo')) navItems.push({ id: 'catalog', label: 'Catálogo' });
     if (hasPermission('ver_contacto')) navItems.push({ id: 'contact', label: 'Contacto' });
     if (hasPermission('ver_metricas')) navItems.push({ id: 'analytics', label: 'Analíticas' });
+    if (hasPermission('ver_admin')) navItems.push({ id: 'admin-users', label: 'Gestión Usuarios' });
   }
 
   return (
